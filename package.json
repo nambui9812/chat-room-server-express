@@ -19,6 +19,7 @@
   },
   "homepage": "https://github.com/nambui9812/chat-room-server-express#readme",
   "dependencies": {
+    "@mysql/xdevapi": "8.0.20",
     "bcryptjs": "^2.4.3",
     "config": "^3.3.1",
     "express": "^4.17.1",
