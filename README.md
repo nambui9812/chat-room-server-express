@@ -1,0 +1,1 @@
+This is the server for chat room application, which is developed by expressjs.

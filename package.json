@@ -1,0 +1,30 @@
+{
+  "name": "chat-room-server-express",
+  "version": "1.0.0",
+  "description": "This is the server for chat room application, which is developed by expressjs.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js",
+    "server": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nambui9812/chat-room-server-express.git"
+  },
+  "author": "nambui9812",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nambui9812/chat-room-server-express/issues"
+  },
+  "homepage": "https://github.com/nambui9812/chat-room-server-express#readme",
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "config": "^3.3.1",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
