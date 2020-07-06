@@ -20,4 +20,29 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.post('/sign-up', async (req, res) => {
+    try {
+        const user = await UserService.signUp(req.body);
+        
+        res.status(200).json({
+            messages: ['Create new user successfully.'],
+            data: user
+        });
+    }
+    catch(err) {
+        res.status(404).json({ messages: ['Cannot sign up.'] });
+    }
+});
+
+router.delete('/delete/:username', async (req, res) => {
+    try {
+        await UserService.deleteByUsername(req.params.username);
+
+        res.status(200).json({ messages: ['Delete user successfully.'] });
+    }
+    catch(err) {
+        res.status(404).json({ messages: ['Cannot delete user.'] });
+    }
+});
+
 module.exports = router;
