@@ -6,6 +6,8 @@ function makeUserService({ UserModel }) {
     return Object.freeze({
         findAll,
         signUp,
+        update,
+        changePassword,
         deleteByUsername
     });
 
@@ -17,6 +19,14 @@ function makeUserService({ UserModel }) {
         const newUser = entities.makeUsers(info);
 
         return UserModel.signUp(newUser);
+    }
+
+    function update(info) {
+        return UserModel.update(info);
+    }
+
+    function changePassword(info) {
+        return UserModel.changePassword(info);
     }
 
     function deleteByUsername(username) {

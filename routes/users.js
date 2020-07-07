@@ -34,6 +34,34 @@ router.post('/sign-up', async (req, res) => {
     }
 });
 
+router.put('/update', async (req, res) => {
+    try {
+        const user = await UserService.update(req.body);
+
+        res.status(200).json({
+            messages: ['Update user successfully.'],
+            data: user
+        });
+    }
+    catch(err) {
+        res.status(404).json({ messages: ['Cannot update user.'] });
+    }
+});
+
+router.put('/change-password', async (req, res) => {
+    try {
+        const user = await UserService.changePassword(req.body);
+
+        res.status(200).json({
+            messages: ['Change password successfully.'],
+            data: user
+        });
+    }
+    catch(err) {
+        res.status(404).json({ messages: ['Cannot change password.'] });
+    }
+});
+
 router.delete('/delete/:username', async (req, res) => {
     try {
         await UserService.deleteByUsername(req.params.username);

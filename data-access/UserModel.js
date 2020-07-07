@@ -6,6 +6,8 @@ function makeUserModel() {
     return Object.freeze({
         findAll,
         signUp,
+        update,
+        changePassword,
         findByUsername,
         deleteByUsername
     });
@@ -18,8 +20,9 @@ function makeUserModel() {
             password: 'namdeptrai'
         });
 
-        const schema = await session.getSchema('expressjs');
-        const usersTable = await schema.getTable('users');
+        const schema = session.getSchema('expressjs');
+        const usersTable = schema.getTable('users');
+        
         const result = await usersTable
             .select(['first_name', 'last_name', 'username'])
             .execute();
@@ -32,6 +35,10 @@ function makeUserModel() {
                 username: user[2]
             };
         });
+
+        //let usersCollection = schema.getCollection('users');
+        //console.log(await usersCollection.find().execute());
+        //return usersCollection.find().execute();
     };
 
     async function findByUsername(username) {
@@ -42,8 +49,9 @@ function makeUserModel() {
             password: 'namdeptrai'
         });
 
-        const schema = await session.getSchema('expressjs');
-        const usersTable = await schema.getTable('users');
+        const schema = session.getSchema('expressjs');
+        const usersTable = schema.getTable('users');
+
         const result = await usersTable
             .select(['first_name', 'last_name', 'username', 'password'])
             .where('username = :username')
@@ -51,7 +59,12 @@ function makeUserModel() {
             .execute();
         const user = await result.fetchOne();
         
-        return user;
+        return {
+            firstName: user[0],
+            lastName: user[1],
+            username: user[2],
+            password: user[3]
+        };
     }
 
     async function signUp(info) {
@@ -62,13 +75,80 @@ function makeUserModel() {
             password: 'namdeptrai'
         });
 
-        const schema = await session.getSchema('expressjs');
-        const usersTable = await schema.getTable('users');
+        const schema = session.getSchema('expressjs');
+        const usersTable = schema.getTable('users');
 
         await usersTable
             .insert(['first_name', 'last_name', 'username', 'password'])
             .values([info.getFirstName(), info.getLastName(), info.getUsername(), info.getPassword()])
             .execute();
+    }
+
+    async function update(info) {
+        const session = await mysqlx.getSession({
+            host: 'localhost',
+            port: '33060',
+            user: 'nam',
+            password: 'namdeptrai'
+        });
+
+        const schema = session.getSchema('expressjs');
+        const usersTable = schema.getTable('users');
+
+        await usersTable
+            .update()
+            .set('first_name', info.firstName)
+            .set('last_name', info.lastName)
+            .where('username = :username')
+            .bind('username', info.username)
+            .execute();
+
+        const result = await usersTable
+            .select(['first_name', 'last_name', 'username', 'password'])
+            .where('username = :username')
+            .bind('username', info.username)
+            .execute();
+        const user = await result.fetchOne();
+        
+        return {
+            firstName: user[0],
+            lastName: user[1],
+            username: user[2],
+            password: user[3]
+        };
+    }
+
+    async function changePassword(info) {
+        const session = await mysqlx.getSession({
+            host: 'localhost',
+            port: '33060',
+            user: 'nam',
+            password: 'namdeptrai'
+        });
+
+        const schema = session.getSchema('expressjs');
+        const usersTable = schema.getTable('users');
+
+        await usersTable
+            .update()
+            .set('password', info.password)
+            .where('username = :username')
+            .bind('username', info.username)
+            .execute();
+
+        const result = await usersTable
+            .select(['first_name', 'last_name', 'username', 'password'])
+            .where('username = :username')
+            .bind('username', info.username)
+            .execute();
+        const user = await result.fetchOne();
+        
+        return {
+            firstName: user[0],
+            lastName: user[1],
+            username: user[2],
+            password: user[3]
+        };
     }
 
     async function deleteByUsername(username) {
@@ -79,8 +159,8 @@ function makeUserModel() {
             password: 'namdeptrai'
         });
 
-        const schema = await session.getSchema('expressjs');
-        const usersTable = await schema.getTable('users');
+        const schema = session.getSchema('expressjs');
+        const usersTable = schema.getTable('users');
 
         await usersTable
             .delete()
