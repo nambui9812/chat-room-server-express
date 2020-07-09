@@ -6,6 +6,7 @@ const cuid = require('cuid');
 
 const entities = require('../entities/index');
 const { isCuid } = require('cuid');
+const { makeUsers } = require('../entities/index');
 
 function makeUserService({ UserModel }) {
     return Object.freeze({
@@ -31,7 +32,7 @@ function makeUserService({ UserModel }) {
         return user;
     }
 
-    function signUp(info) {
+    async function signUp(info) {
         if (info.name === null || info.name.length === 0) {
             throw new Error('Name is mandatory.');
         }
@@ -42,6 +43,12 @@ function makeUserService({ UserModel }) {
 
         if (info.password === null || info.password.length === 0) {
             throw new Error('Password is mandatory.');
+        }
+
+        const user = await UserModel.findByUsername(info.username);
+        
+        if (user) {
+            throw new Error('Username has been used.');
         }
 
         const updatedInfo = Object.assign({}, info);
@@ -68,7 +75,11 @@ function makeUserService({ UserModel }) {
             throw new Error('User not found.');
         }
 
-        return UserModel.changeName(info);
+        const updatedUser = makeUsers(user);
+
+        updatedUser.updateName(info.name);
+
+        return UserModel.changeName(updatedUser);
     }
 
     async function changePassword(info) {
@@ -86,11 +97,13 @@ function makeUserService({ UserModel }) {
             throw new Error('User not found.');
         }
 
-        const updatedInfo = Object.assign({}, info);
+        const hashedNewPassword = bcrypt.hashSync(info.password, bcrypt.genSaltSync());
 
-        updatedInfo.password = bcrypt.hashSync(info.password, bcrypt.genSaltSync());
+        const updatedUser = makeUsers(user);
 
-        return UserModel.changePassword(updatedInfo);
+        updatedUser.updatePassword(hashedNewPassword);
+
+        return UserModel.changePassword(updatedUser);
     }
 
     async function deleteById(id) {

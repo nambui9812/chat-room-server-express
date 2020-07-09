@@ -87,6 +87,10 @@ function makeUserModel() {
             .bind('username', username)
             .execute();
         const user = await result.fetchOne();
+
+        if(!user) {
+            return null;
+        }
         
         return {
             id: user[0],
@@ -127,15 +131,15 @@ function makeUserModel() {
 
         await usersTable
             .update()
-            .set('name', info.name)
+            .set('name', info.getName())
             .where('id = :id')
-            .bind('id', info.id)
+            .bind('id', info.getId())
             .execute();
 
         const result = await usersTable
             .select(['id', 'name', 'username', 'password', 'createdDate'])
             .where('id = :id')
-            .bind('id', info.id)
+            .bind('id', info.getId())
             .execute();
         const user = await result.fetchOne();
         
@@ -161,15 +165,15 @@ function makeUserModel() {
 
         await usersTable
             .update()
-            .set('password', info.password)
+            .set('password', info.getPassword())
             .where('id = :id')
-            .bind('id', info.id)
+            .bind('id', info.getId())
             .execute();
 
         const result = await usersTable
             .select(['id', 'name', 'username', 'password', 'createdDate'])
             .where('id = :id')
-            .bind('id', info.id)
+            .bind('id', info.getId())
             .execute();
         const user = await result.fetchOne();
         
