@@ -5,11 +5,12 @@ const mysqlx = require('@mysql/xdevapi');
 function makeUserModel() {
     return Object.freeze({
         findAll,
-        signUp,
-        update,
-        changePassword,
+        findById,
         findByUsername,
-        deleteByUsername
+        signUp,
+        changeName,
+        changePassword,
+        deleteById
     });
 
     async function findAll() {
@@ -24,22 +25,50 @@ function makeUserModel() {
         const usersTable = schema.getTable('users');
         
         const result = await usersTable
-            .select(['first_name', 'last_name', 'username'])
+            .select(['id', 'name', 'username', 'createdDate'])
             .execute();
         const users = await result.fetchAll();
 
         return users.map(user => {
             return {
-                firstName: user[0],
-                lastName: user[1],
-                username: user[2]
+                id: user[0],
+                name: user[1],
+                username: user[2],
+                createdDate: user[3]
             };
         });
-
-        //let usersCollection = schema.getCollection('users');
-        //console.log(await usersCollection.find().execute());
-        //return usersCollection.find().execute();
     };
+
+    async function findById(id) {
+        const session = await mysqlx.getSession({
+            host: 'localhost',
+            port: '33060',
+            user: 'nam',
+            password: 'namdeptrai'
+        });
+
+        const schema = session.getSchema('expressjs');
+        const usersTable = schema.getTable('users');
+
+        const result = await usersTable
+            .select(['id', 'name', 'username', 'password', 'createdDate'])
+            .where('id = :id')
+            .bind('id', id)
+            .execute();
+        const user = await result.fetchOne();
+
+        if(!user) {
+            return null;
+        }
+        
+        return {
+            id: user[0],
+            name: user[1],
+            username: user[2],
+            password: user[3],
+            createdDate: user[4]
+        };
+    }
 
     async function findByUsername(username) {
         const session = await mysqlx.getSession({
@@ -53,17 +82,18 @@ function makeUserModel() {
         const usersTable = schema.getTable('users');
 
         const result = await usersTable
-            .select(['first_name', 'last_name', 'username', 'password'])
+            .select(['id', 'name', 'username', 'password', 'createdDate'])
             .where('username = :username')
             .bind('username', username)
             .execute();
         const user = await result.fetchOne();
         
         return {
-            firstName: user[0],
-            lastName: user[1],
+            id: user[0],
+            name: user[1],
             username: user[2],
-            password: user[3]
+            password: user[3],
+            createdDate: user[4]
         };
     }
 
@@ -79,12 +109,12 @@ function makeUserModel() {
         const usersTable = schema.getTable('users');
 
         await usersTable
-            .insert(['first_name', 'last_name', 'username', 'password'])
-            .values([info.getFirstName(), info.getLastName(), info.getUsername(), info.getPassword()])
+            .insert(['id', 'name', 'username', 'password', 'createdDate'])
+            .values([info.getId(), info.getName(), info.getUsername(), info.getPassword(), info.getCreatedDate()])
             .execute();
     }
 
-    async function update(info) {
+    async function changeName(info) {
         const session = await mysqlx.getSession({
             host: 'localhost',
             port: '33060',
@@ -97,24 +127,24 @@ function makeUserModel() {
 
         await usersTable
             .update()
-            .set('first_name', info.firstName)
-            .set('last_name', info.lastName)
-            .where('username = :username')
-            .bind('username', info.username)
+            .set('name', info.name)
+            .where('id = :id')
+            .bind('id', info.id)
             .execute();
 
         const result = await usersTable
-            .select(['first_name', 'last_name', 'username', 'password'])
-            .where('username = :username')
-            .bind('username', info.username)
+            .select(['id', 'name', 'username', 'password', 'createdDate'])
+            .where('id = :id')
+            .bind('id', info.id)
             .execute();
         const user = await result.fetchOne();
         
         return {
-            firstName: user[0],
-            lastName: user[1],
+            id: user[0],
+            name: user[1],
             username: user[2],
-            password: user[3]
+            password: user[3],
+            createdDate: user[4]
         };
     }
 
@@ -132,14 +162,14 @@ function makeUserModel() {
         await usersTable
             .update()
             .set('password', info.password)
-            .where('username = :username')
-            .bind('username', info.username)
+            .where('id = :id')
+            .bind('id', info.id)
             .execute();
 
         const result = await usersTable
-            .select(['first_name', 'last_name', 'username', 'password'])
-            .where('username = :username')
-            .bind('username', info.username)
+            .select(['id', 'name', 'username', 'password', 'createdDate'])
+            .where('id = :id')
+            .bind('id', info.id)
             .execute();
         const user = await result.fetchOne();
         
@@ -151,7 +181,7 @@ function makeUserModel() {
         };
     }
 
-    async function deleteByUsername(username) {
+    async function deleteById(id) {
         const session = await mysqlx.getSession({
             host: 'localhost',
             port: '33060',
@@ -164,8 +194,8 @@ function makeUserModel() {
 
         await usersTable
             .delete()
-            .where('username = :username')
-            .bind('username', username)
+            .where('id = :id')
+            .bind('id', id)
             .execute();
     }
 };

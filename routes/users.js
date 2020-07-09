@@ -11,12 +11,26 @@ router.get('/', async (req, res) => {
         const users = await UserService.findAll();
         
         res.status(200).json({
-            messages: ['Get all users successfully.'],
+            messages: 'Get all users successfully.',
             data: users
         });
     }
     catch(err) {
-        res.status(404).json({ messages: ['Cannot get all users.'] });
+        res.status(404).json({ messages: err.message || 'Cannot get all users.' });
+    }
+});
+
+router.get('/:id', async (req, res) => {
+    try {
+        const user = await UserService.findById(req.params.id);
+
+        res.status(200).json({
+            messages: 'Get user successfully.',
+            data: user
+        });
+    }
+    catch(err) {
+        res.status(404).json({ messages: err.message || 'Cannot get all users.' });
     }
 });
 
@@ -25,26 +39,26 @@ router.post('/sign-up', async (req, res) => {
         const user = await UserService.signUp(req.body);
         
         res.status(200).json({
-            messages: ['Create new user successfully.'],
+            messages: 'Create new user successfully.',
             data: user
         });
     }
     catch(err) {
-        res.status(404).json({ messages: ['Cannot sign up.'] });
+        res.status(404).json({ messages: err.message || 'Cannot sign up.' });
     }
 });
 
-router.put('/update', async (req, res) => {
+router.put('/change-name', async (req, res) => {
     try {
-        const user = await UserService.update(req.body);
+        const user = await UserService.changeName(req.body);
 
         res.status(200).json({
-            messages: ['Update user successfully.'],
+            messages: 'Change name of user successfully.',
             data: user
         });
     }
     catch(err) {
-        res.status(404).json({ messages: ['Cannot update user.'] });
+        res.status(404).json({ messages: err.message || 'Cannot change name of user.' });
     }
 });
 
@@ -53,23 +67,23 @@ router.put('/change-password', async (req, res) => {
         const user = await UserService.changePassword(req.body);
 
         res.status(200).json({
-            messages: ['Change password successfully.'],
+            messages: 'Change password successfully.',
             data: user
         });
     }
     catch(err) {
-        res.status(404).json({ messages: ['Cannot change password.'] });
+        res.status(404).json({ messages: err.message || 'Cannot change password.' });
     }
 });
 
-router.delete('/delete/:username', async (req, res) => {
+router.delete('/delete/:id', async (req, res) => {
     try {
-        await UserService.deleteByUsername(req.params.username);
+        await UserService.deleteById(req.params.id);
 
-        res.status(200).json({ messages: ['Delete user successfully.'] });
+        res.status(200).json({ messages: 'Delete user successfully.' });
     }
     catch(err) {
-        res.status(404).json({ messages: ['Cannot delete user.'] });
+        res.status(404).json({ messages: err.message || 'Cannot delete user.' });
     }
 });
 

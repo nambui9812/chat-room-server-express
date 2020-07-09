@@ -1,35 +1,19 @@
 'use strict';
 
-function buildMakeUsers () {
+function buildMakeUsers ({ Id }) {
     return function makeUsers({
-        firstName,
-        lastName,
+        id = Id.getId(),
+        name,
         username,
         password,
-        createdDate = new Date()
+        createdDate = (new Date()).toISOString().slice(0, 19).replace('T', ' ')
     } = {}) {
-        // TODO: Check for firstName, lastName, username, password
-
-        const updateFirstName = (newFirstName) => {
-            firstName = newFirstName;
-        };
-
-        const updateLastName = (newLastName) => {
-            lastName = newLastName;
-        };
-
-        const updatePassword = (newPassword) => {
-            password = newPassword;
-        };
 
         return Object.freeze({
-            getFirstName: () => firstName,
-            updateFirstName,
-            getLastName: () => lastName,
-            updateLastName,
+            getId: () => id,
+            getName: () => name,
             getUsername: () => username,
             getPassword: () => password,
-            updatePassword,
             getCreatedDate: () => createdDate
         });
     };
