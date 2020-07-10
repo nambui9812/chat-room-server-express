@@ -75,16 +75,18 @@ function makeUserService({ UserModel }) {
         if (!user) {
             throw new Error('Wrong username or password.');
         }
-
+        
         const foundUser = makeUsers(user);
 
         const valid = bcrypt.compareSync(info.password, foundUser.getPassword());
-
+        
         if (!valid) {
             throw new Error('Wrong username or password.');
         }
 
-        return jwt.sign({ id: foundUser.getId() }, 'secret', { algorithm: "RS512", expiresIn: 60 * 60 }); // 1 hour
+        const token = jwt.sign({ id: foundUser.getId() }, 'secret', { expiresIn: 60 * 60 }); // 1 hour
+        
+        return token;
     }
 
     async function changeName(info) {

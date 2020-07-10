@@ -3,6 +3,7 @@
 const express = require('express');
 const Services = require('../services/index');
 const { UserService } = Services;
+const auth = require('../middlewares/auth');
 
 const router = express.Router();
 
