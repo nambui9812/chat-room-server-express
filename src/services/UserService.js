@@ -14,7 +14,7 @@ function makeUserService({ UserModel }) {
         findById,
         signUp,
         signIn,
-        changeName,
+        update,
         changePassword,
         deleteById
     });
@@ -24,6 +24,10 @@ function makeUserService({ UserModel }) {
     }
 
     async function findById(id) {
+        if (!id || id.length === 0 || !cuid.isCuid(id)) {
+            throw new Error('Invalid id.');
+        }
+
         const user = await UserModel.findById(id);
 
         if (!user) {
@@ -58,7 +62,7 @@ function makeUserService({ UserModel }) {
 
         const newUser = entities.makeUsers(updatedInfo);
 
-        return UserModel.signUp(newUser);
+        return UserModel.create(newUser);
     }
 
     async function signIn(info) {
@@ -89,8 +93,8 @@ function makeUserService({ UserModel }) {
         return token;
     }
 
-    async function changeName(info) {
-        if (!info.id || info.id.length === 0 || !cuid(info.id)) {
+    async function update(info) {
+        if (!info.id || info.id.length === 0 || !cuid.isCuid(info.id)) {
             throw new Error('Invalid id.');
         }
 
@@ -108,11 +112,11 @@ function makeUserService({ UserModel }) {
 
         updatedUser.updateName(info.name);
 
-        return UserModel.changeName(updatedUser);
+        return UserModel.update(updatedUser);
     }
 
     async function changePassword(info) {
-        if (!info.id || info.id.length === 0 || !cuid(info.id)) {
+        if (!info.id || info.id.length === 0 || !cuid.isCuid(info.id)) {
             throw new Error('Invalid id.');
         }
 
@@ -132,10 +136,14 @@ function makeUserService({ UserModel }) {
 
         updatedUser.updatePassword(hashedNewPassword);
 
-        return UserModel.changePassword(updatedUser);
+        return UserModel.update(updatedUser);
     }
 
     async function deleteById(id) {
+        if (!id || id.length === 0 || !cuid.isCuid(id)) {
+            throw new Error('Invalid id.');
+        }
+
         const user = await UserModel.findById(id);
 
         if (!user) {

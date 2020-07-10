@@ -7,9 +7,8 @@ function makeUserModel() {
         findAll,
         findById,
         findByUsername,
-        signUp,
-        changeName,
-        changePassword,
+        create,
+        update,
         deleteById
     });
 
@@ -101,7 +100,7 @@ function makeUserModel() {
         };
     }
 
-    async function signUp(info) {
+    async function create(info) {
         const session = await mysqlx.getSession({
             host: 'localhost',
             port: '33060',
@@ -118,7 +117,7 @@ function makeUserModel() {
             .execute();
     }
 
-    async function changeName(info) {
+    async function update(info) {
         const session = await mysqlx.getSession({
             host: 'localhost',
             port: '33060',
@@ -132,6 +131,7 @@ function makeUserModel() {
         await usersTable
             .update()
             .set('name', info.getName())
+            .set('password', info.getPassword())
             .where('id = :id')
             .bind('id', info.getId())
             .execute();
@@ -149,39 +149,6 @@ function makeUserModel() {
             username: user[2],
             password: user[3],
             createdDate: user[4]
-        };
-    }
-
-    async function changePassword(info) {
-        const session = await mysqlx.getSession({
-            host: 'localhost',
-            port: '33060',
-            user: 'nam',
-            password: 'namdeptrai'
-        });
-
-        const schema = session.getSchema('expressjs');
-        const usersTable = schema.getTable('users');
-
-        await usersTable
-            .update()
-            .set('password', info.getPassword())
-            .where('id = :id')
-            .bind('id', info.getId())
-            .execute();
-
-        const result = await usersTable
-            .select(['id', 'name', 'username', 'password', 'createdDate'])
-            .where('id = :id')
-            .bind('id', info.getId())
-            .execute();
-        const user = await result.fetchOne();
-        
-        return {
-            firstName: user[0],
-            lastName: user[1],
-            username: user[2],
-            password: user[3]
         };
     }
 

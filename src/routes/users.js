@@ -63,22 +63,28 @@ router.post('/sign-in', async (req, res) => {
     }
 });
 
-router.put('/change-name', async (req, res) => {
+router.put('/update', auth, async (req, res) => {
     try {
-        const user = await UserService.changeName(req.body);
+        // Add id from auth middleware to req body
+        req.body.id = res.locals.id;
+
+        const user = await UserService.update(req.body);
 
         res.status(200).json({
-            messages: 'Change name of user successfully.',
+            messages: 'Update user successfully.',
             data: user
         });
     }
     catch(err) {
-        res.status(404).json({ messages: err.message || 'Cannot change name of user.' });
+        res.status(404).json({ messages: err.message || 'Cannot update user.' });
     }
 });
 
-router.put('/change-password', async (req, res) => {
+router.put('/change-password', auth, async (req, res) => {
     try {
+        // Add id from auth middleware to req body
+        req.body.id = res.locals.id;
+
         const user = await UserService.changePassword(req.body);
 
         res.status(200).json({
