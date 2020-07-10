@@ -48,6 +48,20 @@ router.post('/sign-up', async (req, res) => {
     }
 });
 
+router.post('/sign-in', async (req, res) => {
+    try {
+        const token = await UserService.signIn(req.body);
+        
+        res.status(200).json({
+            messages: 'Sign in successfully.',
+            data: token
+        });
+    }
+    catch(err) {
+        res.status(404).json({ messages: err.message || 'Cannot sign in.' });
+    }
+});
+
 router.put('/change-name', async (req, res) => {
     try {
         const user = await UserService.changeName(req.body);

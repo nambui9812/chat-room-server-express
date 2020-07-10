@@ -3,9 +3,9 @@
 // Require packages
 const bcrypt = require('bcryptjs');
 const cuid = require('cuid');
+const jwt = require('jsonwebtoken');
 
 const entities = require('../entities/index');
-const { isCuid } = require('cuid');
 const { makeUsers } = require('../entities/index');
 
 function makeUserService({ UserModel }) {
@@ -13,6 +13,7 @@ function makeUserService({ UserModel }) {
         findAll,
         findById,
         signUp,
+        signIn,
         changeName,
         changePassword,
         deleteById
@@ -58,6 +59,32 @@ function makeUserService({ UserModel }) {
         const newUser = entities.makeUsers(updatedInfo);
 
         return UserModel.signUp(newUser);
+    }
+
+    async function signIn(info) {
+        if (!info.username || info.username.length === 0) {
+            throw new Error('Invalid username.');
+        }
+
+        if (!info.password || info.password.length === 0) {
+            throw new Error('Invalid password.');
+        }
+
+        const user = await UserModel.findByUsername(info.username);
+
+        if (!user) {
+            throw new Error('Wrong username or password.');
+        }
+
+        const foundUser = makeUsers(user);
+
+        const valid = bcrypt.compareSync(info.password, foundUser.getPassword());
+
+        if (!valid) {
+            throw new Error('Wrong username or password.');
+        }
+
+        return jwt.sign({ id: foundUser.getId() }, 'secret', { algorithm: "RS512", expiresIn: 60 * 60 }); // 1 hour
     }
 
     async function changeName(info) {

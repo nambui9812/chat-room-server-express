@@ -6,7 +6,6 @@ const bcrypt = require('bcryptjs');
 
 // Require entities
 const buildMakeUsers = require('./users');
-const { isCuid } = require('cuid');
 
 const Id = Object.freeze({
     getId: () => cuid()
