@@ -4,8 +4,10 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 
-const users = require('./routes/users');
 require('./data-access/database-connection');
+
+const users = require('./routes/users');
+const rooms = require('./routes/rooms');
 
 // App
 const app = express();
@@ -22,6 +24,7 @@ app.get('/', (req, res) => {
 });
 
 app.use('/api/users', users);
+app.use('/api/rooms', rooms);
 
 // Port
 const port = process.env.PORT || 5000;

@@ -1,8 +1,7 @@
 'use strict';
 
 const express = require('express');
-const Services = require('../services/index');
-const { UserService } = Services;
+const { UserService } = require('../services/index');
 const auth = require('../middlewares/auth');
 
 const router = express.Router();
@@ -66,7 +65,7 @@ router.post('/sign-in', async (req, res) => {
 router.put('/update', auth, async (req, res) => {
     try {
         // Add id from auth middleware to req body
-        req.body.id = res.locals.id;
+        req.body.id = res.locals.currentUserId;
 
         const user = await UserService.update(req.body);
 
@@ -83,7 +82,7 @@ router.put('/update', auth, async (req, res) => {
 router.put('/change-password', auth, async (req, res) => {
     try {
         // Add id from auth middleware to req body
-        req.body.id = res.locals.id;
+        req.body.id = res.locals.currentUserId;
 
         const user = await UserService.changePassword(req.body);
 
@@ -97,9 +96,9 @@ router.put('/change-password', auth, async (req, res) => {
     }
 });
 
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete', auth, async (req, res) => {
     try {
-        await UserService.deleteById(req.params.id);
+        await UserService.deleteById(res.locals.currentUserId);
 
         res.status(200).json({ messages: 'Delete user successfully.' });
     }

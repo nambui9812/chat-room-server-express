@@ -5,7 +5,6 @@ const bcrypt = require('bcryptjs');
 const cuid = require('cuid');
 const jwt = require('jsonwebtoken');
 
-const entities = require('../entities/index');
 const { makeUsers } = require('../entities/index');
 
 function makeUserService({ UserModel }) {
@@ -98,7 +97,7 @@ function makeUserService({ UserModel }) {
             throw new Error('Invalid id.');
         }
 
-        if (!info.name || info.name.length === 0) {
+        if (!info.newName || info.newName.length === 0) {
             throw new Error('Invalid name.');
         }
 
@@ -110,7 +109,7 @@ function makeUserService({ UserModel }) {
 
         const updatedUser = makeUsers(user);
 
-        updatedUser.updateName(info.name);
+        updatedUser.updateName(info.newName);
 
         return UserModel.update(updatedUser);
     }
@@ -120,7 +119,7 @@ function makeUserService({ UserModel }) {
             throw new Error('Invalid id.');
         }
 
-        if (!info.password || info.password.length === 0) {
+        if (!info.newPassword || info.newPassword.length === 0) {
             throw new Error('Invalid password');
         }
 
@@ -130,7 +129,7 @@ function makeUserService({ UserModel }) {
             throw new Error('User not found.');
         }
 
-        const hashedNewPassword = bcrypt.hashSync(info.password, bcrypt.genSaltSync());
+        const hashedNewPassword = bcrypt.hashSync(info.newPassword, bcrypt.genSaltSync());
 
         const updatedUser = makeUsers(user);
 
