@@ -96,6 +96,10 @@ router.put('/change-password', auth, async (req, res) => {
     }
 });
 
+/**
+ * Need to deal with deleting account later
+ */
+/*
 router.delete('/delete', auth, async (req, res) => {
     try {
         await UserService.deleteById(res.locals.currentUserId);
@@ -106,5 +110,6 @@ router.delete('/delete', auth, async (req, res) => {
         res.status(404).json({ messages: err.message || 'Cannot delete user.' });
     }
 });
+*/
 
 module.exports = router;
