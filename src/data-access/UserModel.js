@@ -115,6 +115,20 @@ function makeUserModel() {
             .insert(['id', 'name', 'username', 'password', 'createdDate'])
             .values([info.getId(), info.getName(), info.getUsername(), info.getPassword(), info.getCreatedDate()])
             .execute();
+
+        const result = await usersTable
+            .select(['id', 'name', 'username', 'createdDate'])
+            .where('id = :id')
+            .bind('id', info.getId())
+            .execute();
+        const user = await result.fetchOne();
+        
+        return {
+            id: user[0],
+            name: user[1],
+            username: user[2],
+            createdDate: user[3]
+        };
     }
 
     async function update(info) {

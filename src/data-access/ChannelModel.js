@@ -116,6 +116,21 @@ function makeChannelModel() {
             .insert(['id', 'roomId', 'adminId', 'name', 'createdDate'])
             .values([info.getId(), info.getRoomId(), info.getAdminId(), info.getName(), info.getCreatedDate()])
             .execute();
+
+        const result = await channelsTable
+            .select(['id', 'roomId', 'adminId', 'name', 'createdDate'])
+            .where('id = :id')
+            .bind('id', info.getId())
+            .execute();
+        const channel = await result.fetchOne();
+
+        return {
+            id: channel[0],
+            roomId: channel[1],
+            adminId: channel[2],
+            name: channel[3],
+            createdDate: channel[4]
+        };
     }
 
     async function update(info) {
@@ -135,6 +150,21 @@ function makeChannelModel() {
             .where('id = :id')
             .bind('id', info.getId())
             .execute();
+
+        const result = await channelsTable
+            .select(['id', 'roomId', 'adminId', 'name', 'createdDate'])
+            .where('id = :id')
+            .bind('id', info.getId())
+            .execute();
+        const channel = await result.fetchOne();
+
+        return {
+            id: channel[0],
+            roomId: channel[1],
+            adminId: channel[2],
+            name: channel[3],
+            createdDate: channel[4]
+        };
     }
 
     async function deleteById(id) {

@@ -109,6 +109,19 @@ function makeRoomModel() {
             .insert(['id', 'adminId', 'createdDate'])
             .values([info.getId(), info.getAdminId(), info.getCreatedDate()])
             .execute();
+
+        const result = await roomsTable
+            .select(['id', 'adminId', 'createdDate'])
+            .where('id = :id')
+            .bind('id', info.getId())
+            .execute();
+        const room = await result.fetchOne();
+
+        return {
+            id: room[0],
+            adminId: room[1],
+            createdDate: room[2]
+        };
     }
 
     async function updateAdmin(info) {
@@ -128,6 +141,19 @@ function makeRoomModel() {
             .where('id = :id')
             .bind('id', info.getId())
             .execute();
+
+        const result = await roomsTable
+            .select(['id', 'adminId', 'createdDate'])
+            .where('id = :id')
+            .bind('id', info.getId())
+            .execute();
+        const room = await result.fetchOne();
+
+        return {
+            id: room[0],
+            adminId: room[1],
+            createdDate: room[2]
+        };
     }
 
     async function deleteById(id) {

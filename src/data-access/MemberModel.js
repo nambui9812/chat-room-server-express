@@ -87,6 +87,22 @@ function makeMemberModel() {
             .insert(['id', 'userId', 'roomId', 'name', 'role', 'createdDate'])
             .values([info.getId(), info.getUserId(), info.getRoomId(), info.getName(), info.getRole(), info.getCreatedDate()])
             .execute();
+
+        const result = await membersTable
+            .select(['id', 'userId', 'roomId', 'name', 'role', 'createdDate'])
+            .where('id = :id')
+            .bind('id', info.getId())
+            .execute();
+        const member = await result.fetchOne();
+        
+        return {
+            id: member[0],
+            userId: member[1],
+            roomId: member[2],
+            name: member[3],
+            role: member[4],
+            createdDate: member[5]
+        };
     }
 
     async function update(info) {

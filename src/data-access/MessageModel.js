@@ -86,6 +86,22 @@ function makeMessageModel() {
             .insert(['id', 'userId', 'roomId', 'channelId', 'content', 'createdDate'])
             .values([info.getId(), info.getUserId(), info.getRoomId(), info.getChannelId(), info.getContent(), info.getCreatedDate()])
             .execute();
+
+        const result = await messagesTable
+            .select(['id', 'userId', 'roomId', 'channelId', 'content', 'createdDate'])
+            .where('id = :id')
+            .bind('id', info.getId())
+            .execute();
+        const message = await result.fetchOne();
+        
+        return {
+            id: message[0],
+            userId: message[1],
+            roomId: message[2],
+            channelId: message[3],
+            content: message[4],
+            createdDate: message[5]
+        };
     }
 
     async function update(info) {
