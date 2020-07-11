@@ -40,7 +40,7 @@ function makeMemberService({ MemberModel }) {
             throw new Error('Invalid roomId id.');
         }
 
-        if (!info.name || info.name.length === 0 || !cuid.isCuid(info.name)) {
+        if (!info.name || info.name.length === 0) {
             throw new Error('Invalid name.');
         }
 
@@ -54,6 +54,10 @@ function makeMemberService({ MemberModel }) {
     }
 
     async function update(info) {
+        if (!info.id || info.id.length === 0 || !cuid.isCuid(info.id)) {
+            throw new Error('Invalid user id.');
+        }
+
         if (!info.currentUserId || info.currentUserId.length === 0 || !cuid.isCuid(info.currentUserId)) {
             throw new Error('Invalid user id.');
         }
