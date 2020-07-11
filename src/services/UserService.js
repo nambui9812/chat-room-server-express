@@ -27,6 +27,7 @@ function makeUserService({ UserModel }) {
             throw new Error('Invalid id.');
         }
 
+        // Check if user exist
         const user = await UserModel.findById(id);
 
         if (!user) {
@@ -49,16 +50,18 @@ function makeUserService({ UserModel }) {
             throw new Error('Password is mandatory.');
         }
 
+        // Check if user exist
         const user = await UserModel.findByUsername(info.username);
         
         if (user) {
             throw new Error('Username has been used.');
         }
 
+        // Map info to a clone
         const updatedInfo = Object.assign({}, info);
-
         updatedInfo.password = bcrypt.hashSync(info.password, bcrypt.genSaltSync());
 
+        // Make user
         const newUser = entities.makeUsers(updatedInfo);
 
         return UserModel.create(newUser);
@@ -73,20 +76,23 @@ function makeUserService({ UserModel }) {
             throw new Error('Invalid password.');
         }
 
+        // Check if exist user
         const user = await UserModel.findByUsername(info.username);
 
         if (!user) {
             throw new Error('Wrong username or password.');
         }
         
+        //Make user
         const foundUser = makeUsers(user);
 
+        // Check password
         const valid = bcrypt.compareSync(info.password, foundUser.getPassword());
-        
         if (!valid) {
             throw new Error('Wrong username or password.');
         }
 
+        // Create token
         const token = jwt.sign({ id: foundUser.getId() }, 'secret', { expiresIn: 60 * 60 }); // 1 hour
         
         return token;
@@ -101,14 +107,16 @@ function makeUserService({ UserModel }) {
             throw new Error('Invalid name.');
         }
 
+        // Check if user exist
         const user = await UserModel.findById(info.id);
-
         if (!user) {
             throw new Error('User not found.');
         }
 
+        // Make user
         const updatedUser = makeUsers(user);
 
+        // Update in user
         updatedUser.updateName(info.newName);
 
         return UserModel.update(updatedUser);
@@ -123,16 +131,19 @@ function makeUserService({ UserModel }) {
             throw new Error('Invalid password');
         }
 
+        // Check if user exist
         const user = await UserModel.findById(info.id);
-
         if (!user) {
             throw new Error('User not found.');
         }
 
+        // Create new hashed password based on new password
         const hashedNewPassword = bcrypt.hashSync(info.newPassword, bcrypt.genSaltSync());
 
+        // Make user
         const updatedUser = makeUsers(user);
 
+        // Update new password
         updatedUser.updatePassword(hashedNewPassword);
 
         return UserModel.update(updatedUser);
@@ -143,8 +154,8 @@ function makeUserService({ UserModel }) {
             throw new Error('Invalid id.');
         }
 
+        // Check if user exist
         const user = await UserModel.findById(id);
-
         if (!user) {
             throw new Error('User not found.');
         }

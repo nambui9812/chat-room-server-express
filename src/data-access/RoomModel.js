@@ -9,7 +9,7 @@ function makeRoomModel() {
         findAllByAdminId,
         findById,
         create,
-        update,
+        updateAdmin,
         deleteById
     });
 
@@ -90,7 +90,7 @@ function makeRoomModel() {
         return {
             id: room[0],
             adminId: room[1],
-            createdOne: room[2]
+            createdDate: room[2]
         };
     }
 
@@ -111,7 +111,7 @@ function makeRoomModel() {
             .execute();
     }
 
-    async function update(info) {
+    async function updateAdmin(info) {
         const session = await mysqlx.getSession({
             host: 'localhost',
             port: '33060',

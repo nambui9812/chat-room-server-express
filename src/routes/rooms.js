@@ -34,8 +34,11 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.post('/create', async (req, res) => {
+router.post('/create', auth, async (req, res) => {
     try {
+        // Add id from auth middleware to req body
+        req.body.currentUserId = res.locals.currentUserId;
+
         const room = await RoomService.create(req.body);
         
         res.status(200).json({
@@ -53,7 +56,7 @@ router.put('/update-admin', auth, async (req, res) => {
         // Add id from auth middleware to req body
         req.body.currentUserId = res.locals.currentUserId;
 
-        const room = await RoomService.updateAdminId(req.body);
+        const room = await RoomService.updateAdmin(req.body);
 
         res.status(200).json({
             messages: 'Update room successfully.',
