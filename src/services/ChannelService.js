@@ -37,7 +37,7 @@ function makeChannelService({ RoomModel, ChannelModel }) {
     }
 
     async function create(info) {
-        if (!info.roomId || info.roomId.length === 0 || !cuid.isCuid(roomId)) {
+        if (!info.roomId || info.roomId.length === 0 || !cuid.isCuid(info.roomId)) {
             throw new Error('Invalid room id.');
         }
 
@@ -55,7 +55,7 @@ function makeChannelService({ RoomModel, ChannelModel }) {
         const foundRoom = makeRooms(room);
 
         // Check authorization to create channel
-        if (foundRoom.getAdminId !== info.currentUserId) {
+        if (foundRoom.getAdminId() !== info.currentUserId) {
             throw new Error('Unauthorization.');
         }
 
@@ -66,7 +66,7 @@ function makeChannelService({ RoomModel, ChannelModel }) {
     }
 
     async function update(info) {
-        if (!info.id || info.id.length === 0 || !cuid.isCuid(id)) {
+        if (!info.id || info.id.length === 0 || !cuid.isCuid(info.id)) {
             throw new Error('Invalid id.');
         }
 
@@ -84,12 +84,12 @@ function makeChannelService({ RoomModel, ChannelModel }) {
         const updatedChannel = makeChannels(foundChannel);
 
         // Check authorization tp update channel
-        if (updatedChannel.getAdminId !== info.currentUserId) {
+        if (updatedChannel.getAdminId() !== info.currentUserId) {
             throw new Error('Unauthorization.');
         }
 
         // Update channel
-        updatedChannel.updateName(newName);
+        updatedChannel.updateName(info.newName);
 
         // Save
         return ChannelModel.update(updatedChannel);

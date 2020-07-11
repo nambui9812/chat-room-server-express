@@ -9,6 +9,7 @@ require('./data-access/database-connection');
 const users = require('./routes/users');
 const rooms = require('./routes/rooms');
 const channels = require('./routes/channels');
+const members = require('./routes/members');
 
 // App
 const app = express();
@@ -27,6 +28,7 @@ app.get('/', (req, res) => {
 app.use('/api/users', users);
 app.use('/api/rooms', rooms);
 app.use('/api/channels', channels);
+app.use('/api/members', members);
 
 // Port
 const port = process.env.PORT || 5000;

@@ -51,11 +51,11 @@ function makeRoomService({ RoomModel, ChannelModel }) {
     }
 
     async function updateAdmin(info) {
-        if (!info.id || info.id.length === 0 || !cuid.isCuid(id)) {
+        if (!info.id || info.id.length === 0 || !cuid.isCuid(info.id)) {
             throw new Error('Invalid id.');
         }
 
-        if (!info.newAdminId || info.newAdminId.length === 0 || !cuid.isCuid(newAdminId)) {
+        if (!info.newAdminId || info.newAdminId.length === 0 || !cuid.isCuid(info.newAdminId)) {
             throw new Error('Invalid admin id.');
         }
 
@@ -69,12 +69,12 @@ function makeRoomService({ RoomModel, ChannelModel }) {
         const updatedRoom = makeRooms(foundRoom);
 
         // Check authorization to update room
-        if (updatedRoom.getAdminId !== info.currentUserId) {
+        if (updatedRoom.getAdminId() !== info.currentUserId) {
             throw new Error('Unauthorization.');
         }
 
         // Update
-        updatedRoom.updateAdminId(newAdminId);
+        updatedRoom.updateAdminId(info.newAdminId);
 
         // Save
         return RoomModel.updateAdmin(updatedRoom);
@@ -99,7 +99,7 @@ function makeRoomService({ RoomModel, ChannelModel }) {
         const foundRoom = makeRooms(room);
 
         // Check authorization to delete room
-        if (foundRoom.getAdminId !== info.currentUserId) {
+        if (foundRoom.getAdminId() !== info.currentUserId) {
             throw new Error('Unauthorization.');
         }
 

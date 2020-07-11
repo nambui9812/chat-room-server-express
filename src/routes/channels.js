@@ -30,7 +30,7 @@ router.get('/:id', async (req, res) => {
         });
     }
     catch(err) {
-        res.status(404).json({ messages: err.message || 'Cannot get all channels.' });
+        res.status(404).json({ messages: err.message || 'Cannot get channel.' });
     }
 });
 
