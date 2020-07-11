@@ -13,8 +13,8 @@ const MemberModel = require('../data-access/MemberModel')();
 const MessageModel = require('../data-access/MessageModel')();
 
 const UserService = makeUserService({ UserModel });
-const RoomService = makeRoomService({ RoomModel, ChannelModel });
-const ChannelService = makeChannelService({ RoomModel, ChannelModel });
+const RoomService = makeRoomService({ RoomModel, ChannelModel, MessageModel, MemberModel });
+const ChannelService = makeChannelService({ RoomModel, ChannelModel, MessageModel });
 const MemberService = makeMemberService({ MemberModel });
 const MessageService = makeMessageService({ MessageModel });
 

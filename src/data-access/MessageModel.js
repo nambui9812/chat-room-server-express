@@ -8,7 +8,9 @@ function makeMessageModel() {
         findById,
         create,
         update,
-        deleteById
+        deleteById,
+        deleteByChannelId,
+        deleteByRoomId
     });
 
     async function findAll() {
@@ -154,6 +156,42 @@ function makeMessageModel() {
             .delete()
             .where('id = :id')
             .bind('id', id)
+            .execute();
+    }
+
+    async function deleteByChannelId(channelId) {
+        const session = await mysqlx.getSession({
+            host: 'localhost',
+            port: '33060',
+            user: 'nam',
+            password: 'namdeptrai'
+        });
+
+        const schema = session.getSchema('expressjs');
+        const messagesTable = schema.getTable('messages');
+
+        await messagesTable
+            .delete()
+            .where('channelId = :channelId')
+            .bind('channelId', channelId)
+            .execute();
+    }
+
+    async function deleteByRoomId(roomId) {
+        const session = await mysqlx.getSession({
+            host: 'localhost',
+            port: '33060',
+            user: 'nam',
+            password: 'namdeptrai'
+        });
+
+        const schema = session.getSchema('expressjs');
+        const messagesTable = schema.getTable('messages');
+
+        await messagesTable
+            .delete()
+            .where('roomId = :roomId')
+            .bind('roomId', roomId)
             .execute();
     }
 };

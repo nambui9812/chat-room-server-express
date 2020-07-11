@@ -4,7 +4,7 @@
 const cuid = require('cuid');
 const { makeRooms } = require('../entities/index');
 
-function makeRoomService({ RoomModel, ChannelModel }) {
+function makeRoomService({ RoomModel, ChannelModel, MessageModel, MemberModel }) {
     return Object.freeze({
         findAll,
         findAllByAdminId,
@@ -47,7 +47,8 @@ function makeRoomService({ RoomModel, ChannelModel }) {
         // Make room
         const newRoom = makeRooms(info);
 
-        await RoomModel.create(newRoom);
+        // Create
+        return RoomModel.create(newRoom);
     }
 
     async function updateAdmin(info) {
@@ -103,9 +104,16 @@ function makeRoomService({ RoomModel, ChannelModel }) {
             throw new Error('Unauthorization.');
         }
 
-        // Delete all channel
+        // Delete all messages in room
+        await MessageModel.deleteByRoomId(foundRoom.getId());
+
+        // Delete all channels in room
         await ChannelModel.deleteByRoomId(foundRoom.getId());
 
+        // Delete all members in room
+        await MemberModel.deleteByRoomId(foundRoom.getId());
+
+        // Delete room
         return RoomModel.deleteById(foundRoom.getId());
     }
 }

@@ -9,7 +9,8 @@ function makeMemberModel() {
         create,
         update,
         updateRole,
-        deleteById
+        deleteById,
+        deleteByRoomId
     });
 
     async function findAll() {
@@ -190,6 +191,24 @@ function makeMemberModel() {
             .delete()
             .where('id = :id')
             .bind('id', id)
+            .execute();
+    }
+
+    async function deleteByRoomId(roomId) {
+        const session = await mysqlx.getSession({
+            host: 'localhost',
+            port: '33060',
+            user: 'nam',
+            password: 'namdeptrai'
+        });
+
+        const schema = session.getSchema('expressjs');
+        const membersTable = schema.getTable('members');
+
+        await membersTable
+            .delete()
+            .where('roomId = :roomId')
+            .bind('roomId', roomId)
             .execute();
     }
 };

@@ -4,7 +4,7 @@
 const cuid = require('cuid');
 const { makeRooms, makeChannels } = require('../entities/index');
 
-function makeChannelService({ RoomModel, ChannelModel }) {
+function makeChannelService({ RoomModel, ChannelModel, MessageModel }) {
     return Object.freeze({
         findAll,
         findAllByRoomId,
@@ -62,7 +62,8 @@ function makeChannelService({ RoomModel, ChannelModel }) {
         // Make channel
         const newChannel = makeChannels(info);
 
-        await ChannelModel.create(newChannel);
+        // Create
+        return ChannelModel.create(newChannel);
     }
 
     async function update(info) {
@@ -114,6 +115,10 @@ function makeChannelService({ RoomModel, ChannelModel }) {
             throw new Error('Unauthorization.');
         }
 
+        // Delete all messages in channel
+        await MessageModel.deleteByChannelId(foundChannel.getId());
+
+        // Delete channel
         return ChannelModel.deleteById(foundChannel.getId());
     }
 }
