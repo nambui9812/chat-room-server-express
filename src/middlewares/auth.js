@@ -8,8 +8,8 @@ const auth = (req, res, next) => {
 
     try {
         const decoded = jwt.verify(token, 'secret');
-
-        res.locals.currentUserId = decoded.currentUserId;
+        
+        res.locals.currentUserId = decoded.id;
         next();
     }
     catch(err) {

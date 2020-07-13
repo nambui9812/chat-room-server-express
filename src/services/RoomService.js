@@ -82,16 +82,16 @@ function makeRoomService({ RoomModel, ChannelModel, MessageModel, MemberModel })
     }
 
     async function deleteById(info) {
-        if (!id || id.length === 0 || !cuid.isCuid(id)) {
+        if (!info.id || info.id.length === 0 || !cuid.isCuid(info.id)) {
             throw new Error('Invalid id.');
         }
 
-        if (!currentUserId || id.currentUserId === 0 || !cuid.isCuid(currentUserId)) {
+        if (!info.currentUserId || info.currentUserId.length === 0 || !cuid.isCuid(info.currentUserId)) {
             throw new Error('Unauthorization.');
         }
 
         // Check if room exist
-        const room = await RoomModel.findById(id);
+        const room = await RoomModel.findById(info.id);
         if (!room) {
             throw new Error('Room not found.');
         }

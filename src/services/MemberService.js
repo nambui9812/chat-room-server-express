@@ -50,7 +50,7 @@ function makeMemberService({ MemberModel }) {
         // Make member
         const newMember = makeMembers(info);
 
-        await MemberModel.create(newMember);
+        return MemberModel.create(newMember);
     }
 
     async function update(info) {
@@ -88,16 +88,16 @@ function makeMemberService({ MemberModel }) {
     }
 
     async function deleteById(info) {
-        if (!id || id.length === 0 || !cuid.isCuid(id)) {
+        if (!info.id || info.id.length === 0 || !cuid.isCuid(info.id)) {
             throw new Error('Invalid id.');
         }
 
-        if (!currentUserId || id.currentUserId === 0 || !cuid.isCuid(currentUserId)) {
+        if (!info.currentUserId || info.currentUserId.length === 0 || !cuid.isCuid(info.currentUserId)) {
             throw new Error('Unauthorization.');
         }
 
         // Check if member exist
-        const member = await MemberModel.findById(id);
+        const member = await MemberModel.findById(info.id);
         if (!member) {
             throw new Error('member not found.');
         }

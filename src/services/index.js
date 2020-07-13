@@ -16,7 +16,7 @@ const UserService = makeUserService({ UserModel });
 const RoomService = makeRoomService({ RoomModel, ChannelModel, MessageModel, MemberModel });
 const ChannelService = makeChannelService({ RoomModel, ChannelModel, MessageModel });
 const MemberService = makeMemberService({ MemberModel });
-const MessageService = makeMessageService({ MessageModel });
+const MessageService = makeMessageService({ RoomModel, ChannelModel, MemberModel, MessageModel });
 
 module.exports = Object.freeze({
     UserService,

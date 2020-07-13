@@ -10,6 +10,7 @@ const users = require('./routes/users');
 const rooms = require('./routes/rooms');
 const channels = require('./routes/channels');
 const members = require('./routes/members');
+const messages = require('./routes/messages');
 
 // App
 const app = express();
@@ -29,6 +30,7 @@ app.use('/api/users', users);
 app.use('/api/rooms', rooms);
 app.use('/api/channels', channels);
 app.use('/api/members', members);
+app.use('/api/messages', messages);
 
 // Port
 const port = process.env.PORT || 5000;

@@ -73,7 +73,7 @@ router.delete('/delete/:id', auth, async (req, res) => {
         // Get all info
         const info = {
             currentUserId: res.locals.currentUserId,
-            id: id
+            id: req.params.id
         };
 
         await MemberService.deleteById(info);

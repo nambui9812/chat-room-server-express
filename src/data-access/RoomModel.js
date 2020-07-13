@@ -33,7 +33,7 @@ function makeRoomModel() {
             return {
                 id: room[0],
                 adminId: room[1],
-                createdDate: user[2]
+                createdDate: room[2]
             };
         });
     }

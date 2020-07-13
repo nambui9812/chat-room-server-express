@@ -6,6 +6,9 @@ const auth = require('../middlewares/auth');
 
 const router = express.Router();
 
+/**
+ * Checked api
+ */
 router.get('/', async (req, res) => {
     try {
         const rooms = await RoomService.findAll();
@@ -20,6 +23,9 @@ router.get('/', async (req, res) => {
     }
 });
 
+/**
+ * Checked api
+ */
 router.get('/:id', async (req, res) => {
     try {
         const room = await RoomService.findById(req.params.id);
@@ -34,11 +40,14 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+/**
+ * Checked api
+ */
 router.post('/create', auth, async (req, res) => {
     try {
         // Add id from auth middleware to req body
         req.body.currentUserId = res.locals.currentUserId;
-
+        
         const room = await RoomService.create(req.body);
         
         res.status(200).json({
@@ -68,12 +77,15 @@ router.put('/update-admin', auth, async (req, res) => {
     }
 });
 
+/**
+ * Checked api
+ */
 router.delete('/delete/:id', auth, async (req, res) => {
     try {
         // Get all info
         const info = {
             currentUserId: res.locals.currentUserId,
-            id: id
+            id: req.params.id
         };
 
         await RoomService.deleteById(info);

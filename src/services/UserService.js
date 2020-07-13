@@ -62,7 +62,7 @@ function makeUserService({ UserModel }) {
         updatedInfo.password = bcrypt.hashSync(info.password, bcrypt.genSaltSync());
 
         // Make user
-        const newUser = entities.makeUsers(updatedInfo);
+        const newUser = makeUsers(updatedInfo);
 
         return UserModel.create(newUser);
     }

@@ -2,9 +2,9 @@
 
 // Require packages
 const cuid = require('cuid');
-const { makeMessages } = require('../entities/index');
+const { makeChannels, makeMessages } = require('../entities/index');
 
-function makeMessageService({ MessageModel }) {
+function makeMessageService({ RoomModel, ChannelModel, MemberModel, MessageModel }) {
     return Object.freeze({
         findAll,
         findById,
@@ -51,10 +51,31 @@ function makeMessageService({ MessageModel }) {
         // Map to make message
         info.userId = info.currentUserId;
 
+        // Check if room exist
+        const foundRoom = await RoomModel.findById(info.roomId);
+        if (!foundRoom) {
+            throw new Error('Room not found.');
+        }
+
+        // Check if channel exist
+        const foundChannel = await ChannelModel.findById(info.channelId);
+        if (!foundChannel) {
+            throw new Error('Channel not found');
+        }
+
+        // Make Channel
+        const channel = makeChannels(foundChannel);
+
+        // Check if member exist
+        const foundMember = await MemberModel.findByUserIdAndRoomId(info.userId, info.roomId);
+        if (!foundMember && info.userId !== channel.getAdminId()) {
+            throw new Error('Unauthorization.');
+        }
+
         // Make message
         const newMessage = makeMessages(info);
 
-        await MessageModel.create(newMessage);
+        return MessageModel.create(newMessage);
     }
 
     async function update(info) {
@@ -92,16 +113,16 @@ function makeMessageService({ MessageModel }) {
     }
 
     async function deleteById(info) {
-        if (!id || id.length === 0 || !cuid.isCuid(id)) {
+        if (!info.id || info.id.length === 0 || !cuid.isCuid(info.id)) {
             throw new Error('Invalid id.');
         }
 
-        if (!currentUserId || id.currentUserId === 0 || !cuid.isCuid(currentUserId)) {
+        if (!info.currentUserId || info.currentUserId.length === 0 || !cuid.isCuid(info.currentUserId)) {
             throw new Error('Unauthorization.');
         }
 
         // Check if message exist
-        const message = await MessageModel.findById(id);
+        const message = await MessageModel.findById(info.id);
         if (!message) {
             throw new Error('Message not found.');
         }

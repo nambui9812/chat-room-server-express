@@ -37,6 +37,10 @@ function makeChannelService({ RoomModel, ChannelModel, MessageModel }) {
     }
 
     async function create(info) {
+        if (!info.currentUserId || info.currentUserId.length === 0 || !cuid.isCuid(info.currentUserId)) {
+            throw new Error('Unauthorization');
+        }
+
         if (!info.roomId || info.roomId.length === 0 || !cuid.isCuid(info.roomId)) {
             throw new Error('Invalid room id.');
         }
@@ -50,14 +54,17 @@ function makeChannelService({ RoomModel, ChannelModel, MessageModel }) {
         if (!room) {
             throw new Error('Room not found.')
         }
-
+        
         // Make room
         const foundRoom = makeRooms(room);
-
+        
         // Check authorization to create channel
         if (foundRoom.getAdminId() !== info.currentUserId) {
             throw new Error('Unauthorization.');
         }
+
+        // Get adminId for channel
+        info.adminId = info.currentUserId;
 
         // Make channel
         const newChannel = makeChannels(info);
@@ -102,7 +109,7 @@ function makeChannelService({ RoomModel, ChannelModel, MessageModel }) {
         }
 
         // Check if channel exist
-        const channel = await ChannelModel.findById(id);
+        const channel = await ChannelModel.findById(info.id);
         if (!channel) {
             throw new Error('Channel not found.');
         }
