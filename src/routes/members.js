@@ -9,7 +9,7 @@ const router = express.Router();
 /**
  * Checked api
  */
-router.get('/all', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const members = await MemberService.findAll();
         
@@ -23,6 +23,9 @@ router.get('/all', async (req, res) => {
     }
 });
 
+/**
+ * Checked api
+ */
 router.get('/room/:roomId', async (req, res) => {
     try {
         const members = await MemberService.findAllByRoomId(req.params.roomId);

@@ -23,6 +23,9 @@ router.get('/', async (req, res) => {
     }
 });
 
+/**
+ * Checked api
+ */
 router.get('/admin/:adminId', async (req, res) => {
     try {
         const rooms = await RoomService.findAllByAdminId(req.params.adminId);
@@ -37,6 +40,9 @@ router.get('/admin/:adminId', async (req, res) => {
     }
 });
 
+/**
+ * Checked api
+ */
 router.get('/user/:userId', async (req, res) => {
     try {
         const rooms = await RoomService.findAllByUserId(req.params.userId);
