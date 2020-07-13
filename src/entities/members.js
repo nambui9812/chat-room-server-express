@@ -6,9 +6,10 @@ function buildMakeMembers ({ Id }) {
         userId,
         roomId,
         name,
-        role = 'member',
         createdDate = (new Date()).toISOString().slice(0, 19).replace('T', ' ')
     } = {}) {
+        // Role is 'member' as default
+        let role = 'member';
 
         const updateName = (newName) => {
             name = newName;

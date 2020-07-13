@@ -23,6 +23,20 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/room/:roomId', async (req, res) => {
+    try {
+        const channels = await ChannelService.findAllByRoomId(req.params.roomId);
+        
+        res.status(200).json({
+            messages: 'Get all channels in room successfully.',
+            data: channels
+        });
+    }
+    catch(err) {
+        res.status(404).json({ messages: err.message || 'Cannot get all channels in room.' });
+    }
+});
+
 /**
  * Checked api
  */

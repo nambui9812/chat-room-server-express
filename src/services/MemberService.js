@@ -2,11 +2,12 @@
 
 // Require packages
 const cuid = require('cuid');
-const { makeMembers } = require('../entities/index');
+const { makeRooms, makeMembers } = require('../entities/index');
 
-function makeMemberService({ MemberModel }) {
+function makeMemberService({ UserModel, RoomModel, MemberModel }) {
     return Object.freeze({
         findAll,
+        findAllByRoomId,
         findById,
         create,
         update,
@@ -15,6 +16,10 @@ function makeMemberService({ MemberModel }) {
 
     function findAll() {
         return MemberModel.findAll();
+    }
+
+    function findAllByRoomId(roomId) {
+        return MemberModel.findAllByRoomId(roomId);
     }
 
     async function findById(id) {
@@ -46,6 +51,32 @@ function makeMemberService({ MemberModel }) {
 
         // Map to make member
         info.userId = info.currentUserId;
+
+        // Checked if user exist
+        const foundUser = await UserModel.findById(info.userId);
+        if (!foundUser) {
+            throw new Error('User not found.;')
+        }
+
+        // Check if room exist
+        const foundRoom = await RoomModel.findById(info.roomId);
+        if (!foundRoom) {
+            throw new Error('Room not found.');
+        }
+
+        // Make room
+        const room = makeRooms(foundRoom);
+
+        // Check if user is admin
+        if (room.getAdminId() === info.userId) {
+            throw new Error('User is admin of room already.');
+        }
+
+        // Check if member exist
+        const foundMember = await MemberModel.findByUserIdAndRoomId(info.userId, info.roomId);
+        if (foundMember) {
+            throw new Error('User has been in room already.');
+        }
 
         // Make member
         const newMember = makeMembers(info);
@@ -97,20 +128,26 @@ function makeMemberService({ MemberModel }) {
         }
 
         // Check if member exist
-        const member = await MemberModel.findById(info.id);
-        if (!member) {
-            throw new Error('member not found.');
+        const foundMember = await MemberModel.findById(info.id);
+        if (!foundMember) {
+            throw new Error('Member not found.');
         }
 
         // Make member
-        const foundMember = makeMembers(member);
+        const member = makeMembers(foundMember);
+
+        // Find the room, dont need to check exist here
+        const foundRoom = await RoomModel.findById(member.getRoomId());
+
+        // Make room
+        const room = makeRooms(foundRoom);
 
         // Check authorization to delete member
-        if (foundMember.getUserId() !== info.currentUserId) {
+        if (member.getUserId() !== info.currentUserId && room.getAdminId() !== info.currentUserId) {
             throw new Error('Unauthorization.');
         }
 
-        return MemberModel.deleteById(foundMember.getId());
+        return MemberModel.deleteById(member.getId());
     }
 }
 

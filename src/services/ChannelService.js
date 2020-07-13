@@ -4,7 +4,7 @@
 const cuid = require('cuid');
 const { makeRooms, makeChannels } = require('../entities/index');
 
-function makeChannelService({ RoomModel, ChannelModel, MessageModel }) {
+function makeChannelService({ UserModel, RoomModel, ChannelModel, MessageModel }) {
     return Object.freeze({
         findAll,
         findAllByRoomId,
@@ -49,22 +49,28 @@ function makeChannelService({ RoomModel, ChannelModel, MessageModel }) {
             throw new Error('Invalid name.');
         }
 
+        // Get adminId for channel
+        info.adminId = info.currentUserId;
+
+        // Check if user exist
+        const foundUser = await UserModel.findById(info.adminId);
+        if (!foundUser) {
+            throw new Error('User not found.');
+        }
+
         // Check if room exist
-        const room = await RoomModel.findById(info.roomId);
-        if (!room) {
+        const foundRoom = await RoomModel.findById(info.roomId);
+        if (!foundRoom) {
             throw new Error('Room not found.')
         }
         
         // Make room
-        const foundRoom = makeRooms(room);
+        const room = makeRooms(foundRoom);
         
         // Check authorization to create channel
-        if (foundRoom.getAdminId() !== info.currentUserId) {
+        if (room.getAdminId() !== info.adminId) {
             throw new Error('Unauthorization.');
         }
-
-        // Get adminId for channel
-        info.adminId = info.currentUserId;
 
         // Make channel
         const newChannel = makeChannels(info);

@@ -2,12 +2,13 @@
 
 // Require packages
 const cuid = require('cuid');
-const { makeRooms } = require('../entities/index');
+const { makeRooms, makeMembers } = require('../entities/index');
 
-function makeRoomService({ RoomModel, ChannelModel, MessageModel, MemberModel }) {
+function makeRoomService({ UserModel, RoomModel, ChannelModel, MessageModel, MemberModel }) {
     return Object.freeze({
         findAll,
         findAllByAdminId,
+        findAllByUserId,
         findById,
         create,
         updateAdmin,
@@ -20,6 +21,25 @@ function makeRoomService({ RoomModel, ChannelModel, MessageModel, MemberModel })
 
     function findAllByAdminId(adminId) {
         return RoomModel.findAllByAdminId(adminId);
+    }
+
+    async function findAllByUserId(userId) {
+        // Find all members by userId
+        const foundMembers = await MemberModel.findAllByUserId(userId);
+
+        // Make members
+        const members = foundMembers.map(foundMember => makeMembers(foundMember));
+
+        // Find all rooms
+        const foundRooms = [];
+
+        for (let i = 0; i < members.length; ++i) {
+            const foundRoom = await RoomModel.findById(members[i].getRoomId());
+            
+            foundRooms.push(foundRoom);
+        }
+
+        return foundRooms;
     }
 
     async function findById(id) {
@@ -43,6 +63,12 @@ function makeRoomService({ RoomModel, ChannelModel, MessageModel, MemberModel })
 
         // Map to make room
         info.adminId = info.currentUserId;
+
+        // Check if user exist
+        const foundUser = await UserModel.findById(info.adminId);
+        if (!foundUser) {
+            throw new Error('User not found.');
+        }
 
         // Make room
         const newRoom = makeRooms(info);

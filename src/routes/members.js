@@ -6,7 +6,10 @@ const auth = require('../middlewares/auth');
 
 const router = express.Router();
 
-router.get('/', async (req, res) => {
+/**
+ * Checked api
+ */
+router.get('/all', async (req, res) => {
     try {
         const members = await MemberService.findAll();
         
@@ -20,6 +23,23 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/room/:roomId', async (req, res) => {
+    try {
+        const members = await MemberService.findAllByRoomId(req.params.roomId);
+        
+        res.status(200).json({
+            messages: 'Get all members in room successfully.',
+            data: members
+        });
+    }
+    catch(err) {
+        res.status(404).json({ messages: err.message || 'Cannot get all members in room.' });
+    }
+});
+
+/**
+ * Checked api
+ */
 router.get('/:id', async (req, res) => {
     try {
         const member = await MemberService.findById(req.params.id);
@@ -34,6 +54,9 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+/**
+ * Checked api
+ */
 router.post('/create', auth, async (req, res) => {
     try {
         // Add id from auth middleware to req body
@@ -68,6 +91,9 @@ router.put('/update', auth, async (req, res) => {
     }
 });
 
+/**
+ * Checked api
+ */
 router.delete('/delete/:id', auth, async (req, res) => {
     try {
         // Get all info

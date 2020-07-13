@@ -23,6 +23,20 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/channel/:channelId', async (req, res) => {
+    try {
+        const messages = await MessageService.findAllByChannelId(req.params.channelId);
+        
+        res.status(200).json({
+            messages: 'Get all messages in channel successfully.',
+            data: messages
+        });
+    }
+    catch(err) {
+        res.status(404).json({ messages: err.message || 'Cannot get all messages in channel.' });
+    }
+});
+
 /**
  * Checked api
  */

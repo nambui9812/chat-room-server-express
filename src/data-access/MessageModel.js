@@ -5,6 +5,7 @@ const mysqlx = require('@mysql/xdevapi');
 function makeMessageModel() {
     return Object.freeze({
         findAll,
+        findAllByChannelId,
         findById,
         create,
         update,
@@ -26,6 +27,36 @@ function makeMessageModel() {
         
         const result = await messagesTable
             .select(['id', 'userId', 'roomId', 'channelId', 'content', 'createdDate'])
+            .execute();
+        const messages = await result.fetchAll();
+
+        return messages.map(message => {
+            return {
+                id: message[0],
+                userId: message[1],
+                roomId: message[2],
+                channelId: message[3],
+                content: message[4],
+                createdDate: message[5]
+            };
+        });
+    };
+
+    async function findAllByChannelId(channelId) {
+        const session = await mysqlx.getSession({
+            host: 'localhost',
+            port: '33060',
+            user: 'nam',
+            password: 'namdeptrai'
+        });
+
+        const schema = session.getSchema('expressjs');
+        const messagesTable = schema.getTable('messages');
+        
+        const result = await messagesTable
+            .select(['id', 'userId', 'roomId', 'channelId', 'content', 'createdDate'])
+            .where('channelId = :channelId')
+            .bind('channelId', channelId)
             .execute();
         const messages = await result.fetchAll();
 

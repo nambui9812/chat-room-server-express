@@ -4,9 +4,10 @@
 const cuid = require('cuid');
 const { makeChannels, makeMessages } = require('../entities/index');
 
-function makeMessageService({ RoomModel, ChannelModel, MemberModel, MessageModel }) {
+function makeMessageService({ UserModel, RoomModel, ChannelModel, MemberModel, MessageModel }) {
     return Object.freeze({
         findAll,
+        findAllByChannelId,
         findById,
         create,
         update,
@@ -15,6 +16,10 @@ function makeMessageService({ RoomModel, ChannelModel, MemberModel, MessageModel
 
     function findAll() {
         return MessageModel.findAll();
+    }
+
+    function findAllByChannelId(channelId) {
+        return MessageModel.findAllByChannelId(channelId);
     }
 
     async function findById(id) {
@@ -50,6 +55,12 @@ function makeMessageService({ RoomModel, ChannelModel, MemberModel, MessageModel
 
         // Map to make message
         info.userId = info.currentUserId;
+
+        // Check if user exist
+        const foundUser = await UserModel.findById(info.userId);
+        if (!foundUser) {
+            throw new Error('User not found.');
+        }
 
         // Check if room exist
         const foundRoom = await RoomModel.findById(info.roomId);

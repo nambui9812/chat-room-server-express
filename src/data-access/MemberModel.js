@@ -5,6 +5,8 @@ const mysqlx = require('@mysql/xdevapi');
 function makeMemberModel() {
     return Object.freeze({
         findAll,
+        findAllByRoomId,
+        findAllByUserId,
         findById,
         findByUserIdAndRoomId,
         create,
@@ -42,7 +44,67 @@ function makeMemberModel() {
         });
     };
 
-    async function findByUserIdAndRoomId(userId, roomId) {
+    async function findAllByRoomId(roomId) {
+        const session = await mysqlx.getSession({
+            host: 'localhost',
+            port: '33060',
+            user: 'nam',
+            password: 'namdeptrai'
+        });
+
+        const schema = session.getSchema('expressjs');
+        const membersTable = schema.getTable('members');
+        
+        const result = await membersTable
+            .select(['id', 'userId', 'roomId', 'name', 'role', 'createdDate'])
+            .where('roomId = :roomId')
+            .bind('roomId', roomId)
+            .execute();
+        const members = await result.fetchAll();
+
+        return members.map(member => {
+            return {
+                id: member[0],
+                userId: member[1],
+                roomId: member[2],
+                name: member[3],
+                role: member[4],
+                createdDate: member[5]
+            };
+        });
+    };
+
+    async function findAllByUserId(userId) {
+        const session = await mysqlx.getSession({
+            host: 'localhost',
+            port: '33060',
+            user: 'nam',
+            password: 'namdeptrai'
+        });
+
+        const schema = session.getSchema('expressjs');
+        const membersTable = schema.getTable('members');
+        
+        const result = await membersTable
+            .select(['id', 'userId', 'roomId', 'name', 'role', 'createdDate'])
+            .where('userId = :userId')
+            .bind('userId', userId)
+            .execute();
+        const members = await result.fetchAll();
+
+        return members.map(member => {
+            return {
+                id: member[0],
+                userId: member[1],
+                roomId: member[2],
+                name: member[3],
+                role: member[4],
+                createdDate: member[5]
+            };
+        });
+    };
+
+    async function findById(id) {
         const session = await mysqlx.getSession({
             host: 'localhost',
             port: '33060',
@@ -55,9 +117,8 @@ function makeMemberModel() {
 
         const result = await membersTable
             .select(['id', 'userId', 'roomId', 'name', 'role', 'createdDate'])
-            .where('userId = :userId and roomId = :roomId')
-            .bind('userId', userId)
-            .bind('roomId', roomId)
+            .where('id = :id')
+            .bind('id', id)
             .execute();
         const member = await result.fetchOne();
 
@@ -75,7 +136,7 @@ function makeMemberModel() {
         };
     }
 
-    async function findById(id) {
+    async function findByUserIdAndRoomId(userId, roomId) {
         const session = await mysqlx.getSession({
             host: 'localhost',
             port: '33060',
@@ -88,8 +149,9 @@ function makeMemberModel() {
 
         const result = await membersTable
             .select(['id', 'userId', 'roomId', 'name', 'role', 'createdDate'])
-            .where('id = :id')
-            .bind('id', id)
+            .where('userId = :userId and roomId = :roomId')
+            .bind('userId', userId)
+            .bind('roomId', roomId)
             .execute();
         const member = await result.fetchOne();
 

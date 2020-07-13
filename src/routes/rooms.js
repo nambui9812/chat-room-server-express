@@ -23,6 +23,34 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/admin/:adminId', async (req, res) => {
+    try {
+        const rooms = await RoomService.findAllByAdminId(req.params.adminId);
+        
+        res.status(200).json({
+            messages: 'Get all rooms of admin successfully.',
+            data: rooms
+        });
+    }
+    catch(err) {
+        res.status(404).json({ messages: err.message || 'Cannot get all rooms of admin.' });
+    }
+});
+
+router.get('/user/:userId', async (req, res) => {
+    try {
+        const rooms = await RoomService.findAllByUserId(req.params.userId);
+        
+        res.status(200).json({
+            messages: 'Get all rooms of user successfully.',
+            data: rooms
+        });
+    }
+    catch(err) {
+        res.status(404).json({ messages: err.message || 'Cannot get all rooms of user.' });
+    }
+});
+
 /**
  * Checked api
  */
