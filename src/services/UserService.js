@@ -34,6 +34,9 @@ function makeUserService({ UserModel }) {
             throw new Error('User not found.');
         }
 
+        // Remove password
+        user.password = undefined;
+
         return user;
     }
 
@@ -64,7 +67,12 @@ function makeUserService({ UserModel }) {
         // Make user
         const newUser = makeUsers(updatedInfo);
 
-        return UserModel.create(newUser);
+        await UserModel.create(newUser);
+
+        // Create token
+        const token = jwt.sign({ id: newUser.getId() }, 'secret', { expiresIn: 60 * 60 }); // 1 hour
+        
+        return token;
     }
 
     async function signIn(info) {
@@ -77,23 +85,23 @@ function makeUserService({ UserModel }) {
         }
 
         // Check if exist user
-        const user = await UserModel.findByUsername(info.username);
+        const foundUser = await UserModel.findByUsername(info.username);
 
-        if (!user) {
+        if (!foundUser) {
             throw new Error('Wrong username or password.');
         }
         
         //Make user
-        const foundUser = makeUsers(user);
+        const user = makeUsers(foundUser);
 
         // Check password
-        const valid = bcrypt.compareSync(info.password, foundUser.getPassword());
+        const valid = bcrypt.compareSync(info.password, user.getPassword());
         if (!valid) {
             throw new Error('Wrong username or password.');
         }
 
         // Create token
-        const token = jwt.sign({ id: foundUser.getId() }, 'secret', { expiresIn: 60 * 60 }); // 1 hour
+        const token = jwt.sign({ id: user.getId() }, 'secret', { expiresIn: 60 * 60 }); // 1 hour
         
         return token;
     }

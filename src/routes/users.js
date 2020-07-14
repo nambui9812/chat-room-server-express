@@ -20,9 +20,9 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/:id', async (req, res) => {
+router.get('/user', auth, async (req, res) => {
     try {
-        const user = await UserService.findById(req.params.id);
+        const user = await UserService.findById(res.locals.currentUserId);
 
         res.status(200).json({
             messages: 'Get user successfully.',
@@ -36,11 +36,11 @@ router.get('/:id', async (req, res) => {
 
 router.post('/sign-up', async (req, res) => {
     try {
-        const user = await UserService.signUp(req.body);
+        const token = await UserService.signUp(req.body);
         
         res.status(200).json({
             messages: 'Create new user successfully.',
-            data: user
+            data: token
         });
     }
     catch(err) {
@@ -98,8 +98,8 @@ router.put('/change-password', auth, async (req, res) => {
 
 /**
  * Need to deal with deleting account later
+ * Maybe just allow soft delete
  */
-/*
 router.delete('/delete', auth, async (req, res) => {
     try {
         await UserService.deleteById(res.locals.currentUserId);
@@ -110,6 +110,6 @@ router.delete('/delete', auth, async (req, res) => {
         res.status(404).json({ messages: err.message || 'Cannot delete user.' });
     }
 });
-*/
+
 
 module.exports = router;
