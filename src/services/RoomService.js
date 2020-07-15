@@ -31,13 +31,18 @@ function makeRoomService({ UserModel, RoomModel, ChannelModel, MessageModel, Mem
         const members = foundMembers.map(foundMember => makeMembers(foundMember));
 
         // Find all rooms
-        const foundRooms = [];
+        const foundRoomsByUserId = [];
 
         for (let i = 0; i < members.length; ++i) {
             const foundRoom = await RoomModel.findById(members[i].getRoomId());
             
-            foundRooms.push(foundRoom);
+            foundRoomsByUserId.push(foundRoom);
         }
+
+        // Find all room by admin id
+        const foundRoomsByAdminId = await RoomModel.findAllByAdminId(userId);
+
+        const foundRooms = foundRoomsByUserId.concat(foundRoomsByAdminId);
 
         return foundRooms;
     }

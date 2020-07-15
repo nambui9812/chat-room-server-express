@@ -26,9 +26,9 @@ router.get('/', async (req, res) => {
 /**
  * Checked api
  */
-router.get('/admin/:adminId', async (req, res) => {
+router.get('/admin', auth, async (req, res) => {
     try {
-        const rooms = await RoomService.findAllByAdminId(req.params.adminId);
+        const rooms = await RoomService.findAllByAdminId(res.locals.currentUserId);
         
         res.status(200).json({
             messages: 'Get all rooms of admin successfully.',
@@ -43,9 +43,9 @@ router.get('/admin/:adminId', async (req, res) => {
 /**
  * Checked api
  */
-router.get('/user/:userId', async (req, res) => {
+router.get('/user', auth, async (req, res) => {
     try {
-        const rooms = await RoomService.findAllByUserId(req.params.userId);
+        const rooms = await RoomService.findAllByUserId(res.locals.currentUserId);
         
         res.status(200).json({
             messages: 'Get all rooms of user successfully.',

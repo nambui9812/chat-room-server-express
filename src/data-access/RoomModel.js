@@ -25,7 +25,7 @@ function makeRoomModel() {
         const roomsTable = schema.getTable('rooms');
 
         const result = await roomsTable
-            .select(['id', 'adminId', 'createdDate'])
+            .select(['id', 'adminId', 'name', 'createdDate'])
             .execute();
         const rooms = await result.fetchAll();
 
@@ -33,7 +33,8 @@ function makeRoomModel() {
             return {
                 id: room[0],
                 adminId: room[1],
-                createdDate: room[2]
+                name: room[2],
+                createdDate: room[3]
             };
         });
     }
@@ -50,7 +51,7 @@ function makeRoomModel() {
         const roomsTable = schema.getTable('rooms');
 
         const result = await roomsTable
-            .select(['id', 'adminId', 'createdDate'])
+            .select(['id', 'adminId', 'name', 'createdDate'])
             .where('adminId = :adminId')
             .bind('adminId', adminId)
             .execute();
@@ -60,7 +61,8 @@ function makeRoomModel() {
             return {
                 id: room[0],
                 adminId: room[1],
-                createdDate: room[2]
+                name: room[2],
+                createdDate: room[3]
             };
         });
     }
@@ -77,7 +79,7 @@ function makeRoomModel() {
         const roomsTable = schema.getTable('rooms');
 
         const result = await roomsTable
-            .select(['id', 'adminId', 'createdDate'])
+            .select(['id', 'adminId', 'name', 'createdDate'])
             .where('id = :id')
             .bind('id', id)
             .execute();
@@ -90,7 +92,8 @@ function makeRoomModel() {
         return {
             id: room[0],
             adminId: room[1],
-            createdDate: room[2]
+            name: room[2],
+            createdDate: room[3]
         };
     }
 
@@ -106,12 +109,12 @@ function makeRoomModel() {
         const roomsTable = schema.getTable('rooms');
 
         await roomsTable
-            .insert(['id', 'adminId', 'createdDate'])
-            .values([info.getId(), info.getAdminId(), info.getCreatedDate()])
+            .insert(['id', 'adminId', 'name', 'createdDate'])
+            .values([info.getId(), info.getAdminId(), info.getName(), info.getCreatedDate()])
             .execute();
 
         const result = await roomsTable
-            .select(['id', 'adminId', 'createdDate'])
+            .select(['id', 'adminId', 'name', 'createdDate'])
             .where('id = :id')
             .bind('id', info.getId())
             .execute();
@@ -120,7 +123,8 @@ function makeRoomModel() {
         return {
             id: room[0],
             adminId: room[1],
-            createdDate: room[2]
+            name: room[2],
+            createdDate: room[3]
         };
     }
 
@@ -143,7 +147,7 @@ function makeRoomModel() {
             .execute();
 
         const result = await roomsTable
-            .select(['id', 'adminId', 'createdDate'])
+            .select(['id', 'adminId', 'name', 'createdDate'])
             .where('id = :id')
             .bind('id', info.getId())
             .execute();
@@ -152,7 +156,8 @@ function makeRoomModel() {
         return {
             id: room[0],
             adminId: room[1],
-            createdDate: room[2]
+            name: room[2],
+            createdDate: room[3]
         };
     }
 
