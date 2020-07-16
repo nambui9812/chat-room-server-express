@@ -23,9 +23,15 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/room/:roomId', async (req, res) => {
+router.get('/room/:roomId', auth, async (req, res) => {
     try {
-        const channels = await ChannelService.findAllByRoomId(req.params.roomId);
+        // Get all info
+        const info = {
+            currentUserId: res.locals.currentUserId,
+            roomId: req.params.roomId
+        };
+
+        const channels = await ChannelService.findAllByRoomId(info);
         
         res.status(200).json({
             messages: 'Get all channels in room successfully.',
@@ -40,7 +46,7 @@ router.get('/room/:roomId', async (req, res) => {
 /**
  * Checked api
  */
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
     try {
         const channel = await ChannelService.findById(req.params.id);
 

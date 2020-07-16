@@ -4,7 +4,7 @@
 const cuid = require('cuid');
 const { makeRooms, makeChannels } = require('../entities/index');
 
-function makeChannelService({ UserModel, RoomModel, ChannelModel, MessageModel }) {
+function makeChannelService({ UserModel, RoomModel, ChannelModel, MemberModel, MessageModel }) {
     return Object.freeze({
         findAll,
         findAllByRoomId,
@@ -18,8 +18,33 @@ function makeChannelService({ UserModel, RoomModel, ChannelModel, MessageModel }
         return ChannelModel.findAll();
     }
 
-    function findAllByRoomId(roomId) {
-        return ChannelModel.findAllByRoomId(roomId);
+    async function findAllByRoomId(info) {
+        if (!info.currentUserId || info.currentUserId.length === 0 || !cuid.isCuid(info.currentUserId)) {
+            throw new Error('Invalid user id');
+        }
+
+        if (!info.roomId || info.roomId.length === 0 || !cuid.isCuid(info.roomId)) {
+            throw new Error('Invalid room id');
+        }
+
+        // Check if room exist
+        const foundRoom = await RoomModel.findById(info.roomId);
+
+        if (!foundRoom) {
+            throw new Error('Room not found.');
+        }
+
+        // Make room
+        const room = makeRooms(foundRoom);
+
+        // Check if current user is admin or member of this room
+        const foundMember = await MemberModel.findByUserIdAndRoomId(info.currentUserId, room.getId());
+
+        if (room.getAdminId() !== info.currentUserId && !foundMember) {
+            throw new Error('User has not been in room.');
+        }
+
+        return ChannelModel.findAllByRoomId(info.roomId);
     }
 
     async function findById(id) {

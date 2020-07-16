@@ -60,9 +60,15 @@ router.get('/user', auth, async (req, res) => {
 /**
  * Checked api
  */
-router.get('/:id', async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
     try {
-        const room = await RoomService.findById(req.params.id);
+        // Get all info
+        const info = {
+            currentUserId: res.locals.currentUserId,
+            id: req.params.id
+        };
+
+        const room = await RoomService.findById(info);
 
         res.status(200).json({
             messages: 'Get room successfully.',
@@ -70,7 +76,7 @@ router.get('/:id', async (req, res) => {
         });
     }
     catch(err) {
-        res.status(404).json({ messages: err.message || 'Cannot get all rooms.' });
+        res.status(404).json({ messages: err.message || 'Cannot get room.' });
     }
 });
 

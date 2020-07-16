@@ -47,18 +47,32 @@ function makeRoomService({ UserModel, RoomModel, ChannelModel, MessageModel, Mem
         return foundRooms;
     }
 
-    async function findById(id) {
-        if (!id || id.length === 0 || !cuid.isCuid(id)) {
+    async function findById(info) {
+        if (!info.id || info.id.length === 0 || !cuid.isCuid(info.id)) {
             throw new Error('Invalid id.');
         }
 
+        if (!info.currentUserId || info.currentUserId.length === 0 || !cuid.isCuid(info.currentUserId)) {
+            throw new Error('Invalid current user id.');
+        }
+
         // Check if room exist
-        const room = await RoomModel.findById(id);
-        if (!room) {
+        const foundRoom = await RoomModel.findById(info.id);
+        if (!foundRoom) {
             throw new Error('Room not found.');
         }
 
-        return room;
+        // Make room
+        const room = makeRooms(foundRoom);
+
+        // Check if current user is admin or member of this room
+        const foundMember = await MemberModel.findByUserIdAndRoomId(info.currentUserId, room.getId());
+
+        if (room.getAdminId() !== info.currentUserId && !foundMember) {
+            throw new Error('User has not been in room.');
+        }
+
+        return foundRoom;
     }
 
     async function create(info) {

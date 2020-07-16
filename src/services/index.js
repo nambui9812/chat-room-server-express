@@ -14,7 +14,7 @@ const MessageModel = require('../data-access/MessageModel')();
 
 const UserService = makeUserService({ UserModel });
 const RoomService = makeRoomService({ UserModel, RoomModel, ChannelModel, MessageModel, MemberModel });
-const ChannelService = makeChannelService({ UserModel, RoomModel, ChannelModel, MessageModel });
+const ChannelService = makeChannelService({ UserModel, RoomModel, ChannelModel, MemberModel, MessageModel });
 const MemberService = makeMemberService({ UserModel, RoomModel, MemberModel });
 const MessageService = makeMessageService({ UserModel, RoomModel, ChannelModel, MemberModel, MessageModel });
 
