@@ -23,9 +23,15 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.get('/channel/:channelId', async (req, res) => {
+router.get('/channel/:channelId', auth, async (req, res) => {
     try {
-        const messages = await MessageService.findAllByChannelId(req.params.channelId);
+        // Get all info
+        const info = {
+            currentUserId: res.locals.currentUserId,
+            channelId: req.params.channelId
+        };
+
+        const messages = await MessageService.findAllByChannelId(info);
         
         res.status(200).json({
             messages: 'Get all messages in channel successfully.',
@@ -61,6 +67,7 @@ router.post('/create', auth, async (req, res) => {
     try {
         // Add id from auth middleware to req body
         req.body.currentUserId = res.locals.currentUserId;
+        console.log(req.body);
 
         const message = await MessageService.create(req.body);
         

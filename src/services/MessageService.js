@@ -18,8 +18,33 @@ function makeMessageService({ UserModel, RoomModel, ChannelModel, MemberModel, M
         return MessageModel.findAll();
     }
 
-    function findAllByChannelId(channelId) {
-        return MessageModel.findAllByChannelId(channelId);
+    async function findAllByChannelId(info) {
+        if (!info.currentUserId || info.currentUserId.length === 0 || !cuid.isCuid(info.currentUserId)) {
+            throw new Error('Invalid user id');
+        }
+
+        if (!info.channelId || info.channelId.length === 0 || !cuid.isCuid(info.channelId)) {
+            throw new Error('Invalid channelId id');
+        }
+
+        // Check if channel exist
+        const foundChannel = await ChannelModel.findById(info.channelId);
+
+        if (!foundChannel) {
+            throw new Error('Channel not found.');
+        }
+
+        // Make channel
+        const channel = makeChannels(foundChannel);
+
+        // Check if user in room
+        const foundMember = await MemberModel.findByUserIdAndRoomId(info.currentUserId, channel.getRoomId());
+
+        if (channel.getAdminId() !== info.currentUserId && !foundMember) {
+            throw new Error('User is not in room.');
+        }
+
+        return MessageModel.findAllByChannelId(channel.getId());
     }
 
     async function findById(id) {
