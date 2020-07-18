@@ -30,6 +30,8 @@ function makeChannelModel() {
             .execute();
         const channels = await result.fetchAll();
 
+        session.close();
+
         return channels.map(channel => {
             return {
                 id: channel[0],
@@ -59,6 +61,8 @@ function makeChannelModel() {
             .execute();
         const channels = await result.fetchAll();
 
+        session.close();
+
         return channels.map(channel => {
             return {
                 id: channel[0],
@@ -87,6 +91,8 @@ function makeChannelModel() {
             .bind('id', id)
             .execute();
         const channel = await result.fetchOne();
+
+        session.close();
 
         if (!channel) {
             return null;
@@ -124,6 +130,8 @@ function makeChannelModel() {
             .execute();
         const channel = await result.fetchOne();
 
+        session.close();
+
         return {
             id: channel[0],
             roomId: channel[1],
@@ -158,6 +166,8 @@ function makeChannelModel() {
             .execute();
         const channel = await result.fetchOne();
 
+        session.close();
+
         return {
             id: channel[0],
             roomId: channel[1],
@@ -183,6 +193,8 @@ function makeChannelModel() {
             .where('id = :id')
             .bind('id', id)
             .execute();
+
+        session.close();
     }
 
     async function deleteByRoomId(roomId) {
@@ -201,6 +213,8 @@ function makeChannelModel() {
             .where('roomId = :roomId')
             .bind('roomId', roomId)
             .execute();
+
+        session.close();
     }
 };
 

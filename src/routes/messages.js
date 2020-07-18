@@ -67,7 +67,6 @@ router.post('/create', auth, async (req, res) => {
     try {
         // Add id from auth middleware to req body
         req.body.currentUserId = res.locals.currentUserId;
-        console.log(req.body);
 
         const message = await MessageService.create(req.body);
         

@@ -29,6 +29,8 @@ function makeRoomModel() {
             .execute();
         const rooms = await result.fetchAll();
 
+        session.close();
+
         return rooms.map(room => {
             return {
                 id: room[0],
@@ -57,6 +59,8 @@ function makeRoomModel() {
             .execute();
         const rooms = await result.fetchAll();
 
+        session.close();
+
         return rooms.map(room => {
             return {
                 id: room[0],
@@ -84,6 +88,8 @@ function makeRoomModel() {
             .bind('id', id)
             .execute();
         const room = await result.fetchOne();
+
+        session.close();
 
         if (!room) {
             return null;
@@ -120,6 +126,8 @@ function makeRoomModel() {
             .execute();
         const room = await result.fetchOne();
 
+        session.close();
+
         return {
             id: room[0],
             adminId: room[1],
@@ -153,6 +161,8 @@ function makeRoomModel() {
             .execute();
         const room = await result.fetchOne();
 
+        session.close();
+
         return {
             id: room[0],
             adminId: room[1],
@@ -177,6 +187,8 @@ function makeRoomModel() {
             .where('id = :id')
             .bind('id', id)
             .execute();
+
+        session.close();
     }
 };
 

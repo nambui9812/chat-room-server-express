@@ -28,6 +28,8 @@ function makeUserModel() {
             .execute();
         const users = await result.fetchAll();
 
+        session.close();
+
         return users.map(user => {
             return {
                 id: user[0],
@@ -55,6 +57,8 @@ function makeUserModel() {
             .bind('id', id)
             .execute();
         const user = await result.fetchOne();
+
+        session.close();
 
         if(!user) {
             return null;
@@ -86,6 +90,8 @@ function makeUserModel() {
             .bind('username', username)
             .execute();
         const user = await result.fetchOne();
+
+        session.close();
 
         if(!user) {
             return null;
@@ -123,6 +129,8 @@ function makeUserModel() {
             .execute();
         const user = await result.fetchOne();
         
+        session.close();
+
         return {
             id: user[0],
             name: user[1],
@@ -157,6 +165,8 @@ function makeUserModel() {
             .execute();
         const user = await result.fetchOne();
         
+        session.close();
+
         return {
             id: user[0],
             name: user[1],
@@ -182,6 +192,8 @@ function makeUserModel() {
             .where('id = :id')
             .bind('id', id)
             .execute();
+
+        session.close();
     }
 };
 

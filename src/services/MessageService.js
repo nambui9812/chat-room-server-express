@@ -69,7 +69,7 @@ function makeMessageService({ UserModel, RoomModel, ChannelModel, MemberModel, M
         if (!info.roomId || info.roomId.length === 0 || !cuid.isCuid(info.roomId)) {
             throw new Error('Invalid roomId id.');
         }
-
+        
         if (!info.channelId || info.channelId.length === 0 || !cuid.isCuid(info.channelId)) {
             throw new Error('Invalid channel id.');
         }

@@ -32,6 +32,8 @@ function makeMemberModel() {
             .execute();
         const members = await result.fetchAll();
 
+        session.close();
+
         return members.map(member => {
             return {
                 id: member[0],
@@ -61,6 +63,8 @@ function makeMemberModel() {
             .bind('roomId', roomId)
             .execute();
         const members = await result.fetchAll();
+
+        session.close();
 
         return members.map(member => {
             return {
@@ -92,6 +96,8 @@ function makeMemberModel() {
             .execute();
         const members = await result.fetchAll();
 
+        session.close();
+
         return members.map(member => {
             return {
                 id: member[0],
@@ -121,6 +127,8 @@ function makeMemberModel() {
             .bind('id', id)
             .execute();
         const member = await result.fetchOne();
+
+        session.close();
 
         if(!member) {
             return null;
@@ -154,6 +162,8 @@ function makeMemberModel() {
             .bind('roomId', roomId)
             .execute();
         const member = await result.fetchOne();
+
+        session.close();
 
         if(!member) {
             return null;
@@ -192,6 +202,8 @@ function makeMemberModel() {
             .execute();
         const member = await result.fetchOne();
         
+        session.close();
+
         return {
             id: member[0],
             userId: member[1],
@@ -227,6 +239,8 @@ function makeMemberModel() {
             .execute();
         const member = await result.fetchOne();
         
+        session.close();
+
         return {
             id: member[0],
             userId: member[1],
@@ -262,6 +276,8 @@ function makeMemberModel() {
             .execute();
         const member = await result.fetchOne();
         
+        session.close();
+
         return {
             id: member[0],
             userId: member[1],
@@ -288,6 +304,8 @@ function makeMemberModel() {
             .where('id = :id')
             .bind('id', id)
             .execute();
+
+        session.close();
     }
 
     async function deleteByRoomId(roomId) {
@@ -306,6 +324,8 @@ function makeMemberModel() {
             .where('roomId = :roomId')
             .bind('roomId', roomId)
             .execute();
+
+        session.close();
     }
 };
 

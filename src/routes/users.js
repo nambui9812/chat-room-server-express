@@ -30,7 +30,7 @@ router.get('/user', auth, async (req, res) => {
         });
     }
     catch(err) {
-        res.status(404).json({ messages: err.message || 'Cannot get all users.' });
+        res.status(404).json({ messages: err.message || 'Cannot get user.' });
     }
 });
 

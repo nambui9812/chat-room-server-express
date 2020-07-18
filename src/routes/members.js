@@ -26,9 +26,15 @@ router.get('/', async (req, res) => {
 /**
  * Checked api
  */
-router.get('/room/:roomId', async (req, res) => {
+router.get('/room/:roomId', auth, async (req, res) => {
     try {
-        const members = await MemberService.findAllByRoomId(req.params.roomId);
+        // Get all info
+        const info = {
+            currentUserId: res.locals.currentUserId,
+            roomId: req.params.roomId
+        };
+
+        const members = await MemberService.findAllByRoomId(info);
         
         res.status(200).json({
             messages: 'Get all members in room successfully.',

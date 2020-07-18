@@ -30,6 +30,8 @@ function makeMessageModel() {
             .execute();
         const messages = await result.fetchAll();
 
+        session.close();
+
         return messages.map(message => {
             return {
                 id: message[0],
@@ -60,6 +62,8 @@ function makeMessageModel() {
             .execute();
         const messages = await result.fetchAll();
 
+        session.close();
+
         return messages.map(message => {
             return {
                 id: message[0],
@@ -89,6 +93,8 @@ function makeMessageModel() {
             .bind('id', id)
             .execute();
         const message = await result.fetchOne();
+
+        session.close();
 
         if(!message) {
             return null;
@@ -127,6 +133,8 @@ function makeMessageModel() {
             .execute();
         const message = await result.fetchOne();
         
+        session.close();
+
         return {
             id: message[0],
             userId: message[1],
@@ -162,6 +170,8 @@ function makeMessageModel() {
             .execute();
         const message = await result.fetchOne();
         
+        session.close();
+
         return {
             id: message[0],
             userId: message[1],
@@ -188,6 +198,8 @@ function makeMessageModel() {
             .where('id = :id')
             .bind('id', id)
             .execute();
+
+        session.close();
     }
 
     async function deleteByChannelId(channelId) {
@@ -206,6 +218,8 @@ function makeMessageModel() {
             .where('channelId = :channelId')
             .bind('channelId', channelId)
             .execute();
+
+        session.close();
     }
 
     async function deleteByRoomId(roomId) {
@@ -224,6 +238,8 @@ function makeMessageModel() {
             .where('roomId = :roomId')
             .bind('roomId', roomId)
             .execute();
+
+        session.close();
     }
 };
 

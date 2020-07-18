@@ -12,6 +12,7 @@ mysqlx
     })
     .then(session => {
         console.log('Database connected');
+        session.close();
     })
     .catch(err => {
         console.log(err);
