@@ -69,6 +69,9 @@ router.post('/create', auth, async (req, res) => {
         req.body.currentUserId = res.locals.currentUserId;
 
         const message = await MessageService.create(req.body);
+
+        // Send message to all user in current channel
+        req.io.to(message.channelId).emit('message', message);
         
         res.status(200).json({
             messages: 'Create new message successfully.',
