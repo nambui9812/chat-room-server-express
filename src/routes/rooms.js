@@ -15,7 +15,9 @@ router.get('/', async (req, res) => {
         
         res.status(200).json({
             messages: 'Get all rooms successfully.',
-            data: rooms
+            data: {
+                rooms
+            }
         });
     }
     catch(err) {
@@ -32,7 +34,9 @@ router.get('/admin', auth, async (req, res) => {
         
         res.status(200).json({
             messages: 'Get all rooms of admin successfully.',
-            data: rooms
+            data: {
+                rooms
+            }
         });
     }
     catch(err) {
@@ -49,7 +53,9 @@ router.get('/user', auth, async (req, res) => {
         
         res.status(200).json({
             messages: 'Get all rooms of user successfully.',
-            data: rooms
+            data: {
+                rooms
+            }
         });
     }
     catch(err) {
@@ -72,7 +78,9 @@ router.get('/:id', auth, async (req, res) => {
 
         res.status(200).json({
             messages: 'Get room successfully.',
-            data: room
+            data: {
+                room
+            }
         });
     }
     catch(err) {
@@ -92,7 +100,9 @@ router.post('/create', auth, async (req, res) => {
         
         res.status(200).json({
             messages: 'Create new room successfully.',
-            data: room
+            data: {
+                room
+            }
         });
     }
     catch(err) {
@@ -109,7 +119,9 @@ router.put('/update-admin', auth, async (req, res) => {
 
         res.status(200).json({
             messages: 'Update room successfully.',
-            data: room
+            data: {
+                room
+            }
         });
     }
     catch(err) {

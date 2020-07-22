@@ -15,7 +15,9 @@ router.get('/', async (req, res) => {
         
         res.status(200).json({
             messages: 'Get all members successfully.',
-            data: members
+            data: {
+                members
+            }
         });
     }
     catch(err) {
@@ -38,7 +40,9 @@ router.get('/room/:roomId', auth, async (req, res) => {
         
         res.status(200).json({
             messages: 'Get all members in room successfully.',
-            data: members
+            data: {
+                members
+            }
         });
     }
     catch(err) {
@@ -55,7 +59,9 @@ router.get('/:id', async (req, res) => {
 
         res.status(200).json({
             messages: 'Get member successfully.',
-            data: member
+            data: {
+                member
+            }
         });
     }
     catch(err) {
@@ -71,11 +77,11 @@ router.post('/create', auth, async (req, res) => {
         // Add id from auth middleware to req body
         req.body.currentUserId = res.locals.currentUserId;
 
-        const member = await MemberService.create(req.body);
+        const data = await MemberService.create(req.body);
         
         res.status(200).json({
             messages: 'Create new member successfully.',
-            data: member
+            data
         });
     }
     catch(err) {
@@ -92,7 +98,9 @@ router.put('/update', auth, async (req, res) => {
 
         res.status(200).json({
             messages: 'Update member successfully.',
-            data: member
+            data: {
+                member
+            }
         });
     }
     catch(err) {

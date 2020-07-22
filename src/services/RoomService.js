@@ -39,12 +39,7 @@ function makeRoomService({ UserModel, RoomModel, ChannelModel, MessageModel, Mem
             foundRoomsByUserId.push(foundRoom);
         }
 
-        // Find all room by admin id
-        const foundRoomsByAdminId = await RoomModel.findAllByAdminId(userId);
-
-        const foundRooms = foundRoomsByUserId.concat(foundRoomsByAdminId);
-
-        return foundRooms;
+        return foundRoomsByUserId;
     }
 
     async function findById(info) {
@@ -80,6 +75,14 @@ function makeRoomService({ UserModel, RoomModel, ChannelModel, MessageModel, Mem
             throw new Error('Invalid admin id.');
         }
 
+        if (!info.name || info.name.length === 0) {
+            throw new Error('Invalid room name');
+        }
+
+        if (!info.adminName || info.adminName.length === 0) {
+            throw new Error('Invalid admin name');
+        }
+        
         // Map to make room
         info.adminId = info.currentUserId;
 
@@ -90,10 +93,28 @@ function makeRoomService({ UserModel, RoomModel, ChannelModel, MessageModel, Mem
         }
 
         // Make room
-        const newRoom = makeRooms(info);
+        const room = makeRooms(info);
 
-        // Create
-        return RoomModel.create(newRoom);
+        // Create admin member
+        const member = makeMembers({
+            userId: room.getAdminId(),
+            roomId: room.getId(),
+            name: info.adminName
+        });
+
+        // Update admin role
+        member.updateRole('admin');
+
+        console.log(member.getRole());
+
+        // Create room
+        const newRoom = await RoomModel.create(room);
+
+        // Create admin member
+        await MemberModel.create(member);
+
+        // Return
+        return newRoom;
     }
 
     async function updateAdmin(info) {

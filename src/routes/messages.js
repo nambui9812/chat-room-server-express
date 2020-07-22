@@ -15,7 +15,9 @@ router.get('/', async (req, res) => {
         
         res.status(200).json({
             messages: 'Get all messages successfully.',
-            data: messages
+            data: {
+                messages
+            }
         });
     }
     catch(err) {
@@ -35,7 +37,9 @@ router.get('/channel/:channelId', auth, async (req, res) => {
         
         res.status(200).json({
             messages: 'Get all messages in channel successfully.',
-            data: messages
+            data: {
+                messages
+            }
         });
     }
     catch(err) {
@@ -52,7 +56,9 @@ router.get('/:id', async (req, res) => {
 
         res.status(200).json({
             messages: 'Get message successfully.',
-            data: message
+            data: {
+                message
+            }
         });
     }
     catch(err) {
@@ -75,7 +81,9 @@ router.post('/create', auth, async (req, res) => {
         
         res.status(200).json({
             messages: 'Create new message successfully.',
-            data: message
+            data: {
+                message
+            }
         });
     }
     catch(err) {
@@ -92,7 +100,9 @@ router.put('/update', auth, async (req, res) => {
 
         res.status(200).json({
             messages: 'Update message successfully.',
-            data: message
+            data: {
+                message
+            }
         });
     }
     catch(err) {

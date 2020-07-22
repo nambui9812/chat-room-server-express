@@ -16,9 +16,11 @@ function buildMakeMembers ({ Id }) {
         }
 
         const updateRole = (newRole) => {
-            if (newRole !== 'member' || newRole !== 'moderator') {
+            if (newRole !== 'member' && newRole !== 'moderator' && newRole !== 'admin') {
                 throw new Error('Invalid role.');
             }
+
+            role = newRole;
         }
 
         return Object.freeze({

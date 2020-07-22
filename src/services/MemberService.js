@@ -104,9 +104,14 @@ function makeMemberService({ UserModel, RoomModel, MemberModel }) {
         }
 
         // Make member
-        const newMember = makeMembers(info);
+        const member = makeMembers(info);
 
-        return MemberModel.create(newMember);
+        const newMember = await MemberModel.create(member)
+
+        return {
+            room: foundRoom,
+            member: newMember
+        };
     }
 
     async function update(info) {

@@ -15,7 +15,9 @@ router.get('/', async (req, res) => {
         
         res.status(200).json({
             messages: 'Get all channels successfully.',
-            data: channels
+            data: {
+                channels
+            }
         });
     }
     catch(err) {
@@ -35,7 +37,9 @@ router.get('/room/:roomId', auth, async (req, res) => {
         
         res.status(200).json({
             messages: 'Get all channels in room successfully.',
-            data: channels
+            data: {
+                channels
+            }
         });
     }
     catch(err) {
@@ -52,7 +56,9 @@ router.get('/:id', auth, async (req, res) => {
 
         res.status(200).json({
             messages: 'Get channel successfully.',
-            data: channel
+            data: {
+                channel
+            }
         });
     }
     catch(err) {
@@ -72,7 +78,9 @@ router.post('/create', auth, async (req, res) => {
         
         res.status(200).json({
             messages: 'Create new channel successfully.',
-            data: channel
+            data: {
+                channel
+            }
         });
     }
     catch(err) {
@@ -89,7 +97,9 @@ router.put('/update', auth, async (req, res) => {
 
         res.status(200).json({
             messages: 'Update channel successfully.',
-            data: channel
+            data: {
+                channel
+            }
         });
     }
     catch(err) {

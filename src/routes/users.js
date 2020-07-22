@@ -12,7 +12,9 @@ router.get('/', async (req, res) => {
         
         res.status(200).json({
             messages: 'Get all users successfully.',
-            data: users
+            data: {
+                users
+            }
         });
     }
     catch(err) {
@@ -26,7 +28,9 @@ router.get('/user', auth, async (req, res) => {
 
         res.status(200).json({
             messages: 'Get user successfully.',
-            data: user
+            data: {
+                user
+            }
         });
     }
     catch(err) {
@@ -40,7 +44,9 @@ router.post('/sign-up', async (req, res) => {
         
         res.status(200).json({
             messages: 'Create new user successfully.',
-            data: token
+            data: {
+                token
+            }
         });
     }
     catch(err) {
@@ -54,7 +60,9 @@ router.post('/sign-in', async (req, res) => {
         
         res.status(200).json({
             messages: 'Sign in successfully.',
-            data: token
+            data: {
+                token
+            }
         });
     }
     catch(err) {
@@ -71,7 +79,9 @@ router.put('/update', auth, async (req, res) => {
 
         res.status(200).json({
             messages: 'Update user successfully.',
-            data: user
+            data: {
+                user
+            }
         });
     }
     catch(err) {
@@ -88,7 +98,9 @@ router.put('/change-password', auth, async (req, res) => {
 
         res.status(200).json({
             messages: 'Change password successfully.',
-            data: user
+            data: {
+                user
+            }
         });
     }
     catch(err) {
